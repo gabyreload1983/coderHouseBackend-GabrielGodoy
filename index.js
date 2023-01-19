@@ -12,7 +12,10 @@ class ProductManager {
 
   addProduct = (title, description, price, thumbnail, code, stock) => {
     if (
-      [title, description, price, thumbnail, code, stock].includes(undefined)
+      [title, description, price, thumbnail, code, stock].some(
+        (element) =>
+          element === undefined || element === null || element.length === 0
+      )
     ) {
       console.log("Debe ingresar todos los argumentos");
       return;
@@ -75,3 +78,20 @@ p.addProduct(
 console.log(p.getProductById(1));
 p.getProductById(10);
 p.addProduct();
+p.addProduct("", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25);
+p.addProduct(
+  "producto prueba",
+  "Este es un producto prueba",
+  200,
+  "Sin imagen",
+  "abc123"
+);
+p.addProduct(
+  "producto prueba",
+  "Este es un producto prueba",
+  null,
+  "Sin imagen",
+  "abc123",
+  25
+);
+console.log(p.getProducts());
