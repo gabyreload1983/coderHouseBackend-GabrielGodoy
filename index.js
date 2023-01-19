@@ -1,97 +1,68 @@
-class ProductManager {
-  constructor() {
-    this.products = [];
-  }
+import ProductManager from "./ProductManager.js";
 
-  generateId = () => {
-    if (this.products.length === 0) {
-      return 1;
-    }
-    return this.products[this.products.length - 1].id + 1;
-  };
+const path = "./files/Products.json";
 
-  addProduct = (title, description, price, thumbnail, code, stock) => {
-    if (
-      [title, description, price, thumbnail, code, stock].some(
-        (element) =>
-          element === undefined || element === null || element.length === 0
-      )
-    ) {
-      console.log("Debe ingresar todos los argumentos");
-      return;
-    }
+const main = async () => {
+  const productManager = new ProductManager(path);
+  let products = await productManager.getProducts();
+  console.log(products);
 
-    if (this.products.find((p) => p.code === code)) {
-      console.log("Codigo duplicado!!!");
-      return;
-    }
+  await productManager.addProduct(
+    "producto prueba",
+    "Este es un producto prueba",
+    200,
+    "Sin imagen",
+    "abc123",
+    25
+  );
+  await productManager.addProduct(
+    "producto prueba222222222",
+    "Este es un producto prueba2222222",
+    20022,
+    "Sin imagen22222222",
+    "abc123222222222",
+    2522
+  );
+  await productManager.addProduct(
+    "producto prueba222222222",
+    "Este es un producto prueba2222222",
+    20022,
+    "Sin imagen22222222",
+    "abc123222222222",
+    2522
+  );
 
-    const product = {
-      id: this.generateId(),
-      title,
-      description,
-      price,
-      thumbnail,
-      code,
-      stock,
-    };
+  products = await productManager.getProducts();
+  console.log(products);
 
-    this.products.push(product);
-  };
+  await productManager.addProduct(
+    "",
+    "Este es un producto prueba",
+    200,
+    "Sin imagen",
+    "abc123",
+    25
+  );
+  await productManager.addProduct(
+    "producto prueba",
+    "Este es un producto prueba",
+    200,
+    "Sin imagen",
+    "abc123"
+  );
+  await productManager.addProduct(
+    "producto prueba",
+    "Este es un producto prueba",
+    null,
+    "Sin imagen",
+    "abc123",
+    25
+  );
 
-  getProducts = () => {
-    return this.products;
-  };
+  let product = await productManager.getProductById(1);
+  console.log(product);
 
-  getProductById = (id) => {
-    const product = this.products.find((p) => p.id === id);
-    if (product) {
-      return product;
-    }
-    console.log("Not Found");
-  };
-}
+  product = await productManager.getProductById(10);
+};
 
-const p = new ProductManager();
-console.log(p.getProducts());
-
-p.addProduct(
-  "producto prueba",
-  "Este es un producto prueba",
-  200,
-  "Sin imagen",
-  "abc123",
-  25
-);
-
-console.log(p.getProducts());
-
-p.addProduct(
-  "producto prueba",
-  "Este es un producto prueba",
-  200,
-  "Sin imagen",
-  "abc123",
-  25
-);
-
-console.log(p.getProductById(1));
-p.getProductById(10);
-p.addProduct();
-p.addProduct("", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25);
-p.addProduct(
-  "producto prueba",
-  "Este es un producto prueba",
-  200,
-  "Sin imagen",
-  "abc123"
-);
-p.addProduct(
-  "producto prueba",
-  "Este es un producto prueba",
-  null,
-  "Sin imagen",
-  "abc123",
-  25
-);
-console.log(p.getProducts());
+main();
