@@ -1,0 +1,41 @@
+export const productsTest = [
+  {
+    title: "producto prueba",
+    description: "Este es un producto prueba",
+    price: 200,
+    thumbnail: "Sin imagen",
+    code: "abc123",
+    stock: 25,
+  },
+  {
+    title: "producto prueba2",
+    description: "Este es un producto prueba2",
+    price: 2002,
+    thumbnail: "Sin imagen2",
+    code: "abc123222",
+    stock: 252,
+  },
+  {
+    title: "",
+    description: "Este es un producto prueba",
+    price: 200,
+    thumbnail: "Sin imagen",
+    code: "test1",
+    stock: 252,
+  },
+  {
+    description: "Este es un producto prueba",
+    price: 200,
+    thumbnail: "Sin imagen",
+    code: "test2",
+    stock: 25,
+  },
+  {
+    title: null,
+    description: "Este es un producto prueba",
+    price: 200,
+    thumbnail: "Sin imagen",
+    code: "test3",
+    stock: 25,
+  },
+];

@@ -1,68 +1,41 @@
 import ProductManager from "./ProductManager.js";
+import { productsTest } from "./productsTest.js";
 
-const path = "./files/Products.json";
+const path = "./files/products.json";
 
 const main = async () => {
   const productManager = new ProductManager(path);
+
   let products = await productManager.getProducts();
   console.log(products);
 
-  await productManager.addProduct(
-    "producto prueba",
-    "Este es un producto prueba",
-    200,
-    "Sin imagen",
-    "abc123",
-    25
-  );
-  await productManager.addProduct(
-    "producto prueba222222222",
-    "Este es un producto prueba2222222",
-    20022,
-    "Sin imagen22222222",
-    "abc123222222222",
-    2522
-  );
-  await productManager.addProduct(
-    "producto prueba222222222",
-    "Este es un producto prueba2222222",
-    20022,
-    "Sin imagen22222222",
-    "abc123222222222",
-    2522
-  );
+  await productManager.addProduct(productsTest[0]);
+  await productManager.addProduct(productsTest[1]);
+  await productManager.addProduct(productsTest[1]);
 
   products = await productManager.getProducts();
   console.log(products);
 
-  await productManager.addProduct(
-    "",
-    "Este es un producto prueba",
-    200,
-    "Sin imagen",
-    "abc123",
-    25
-  );
-  await productManager.addProduct(
-    "producto prueba",
-    "Este es un producto prueba",
-    200,
-    "Sin imagen",
-    "abc123"
-  );
-  await productManager.addProduct(
-    "producto prueba",
-    "Este es un producto prueba",
-    null,
-    "Sin imagen",
-    "abc123",
-    25
-  );
+  await productManager.addProduct(productsTest[2]);
+  await productManager.addProduct(productsTest[3]);
+  await productManager.addProduct(productsTest[4]);
 
   let product = await productManager.getProductById(1);
   console.log(product);
 
-  product = await productManager.getProductById(10);
+  await productManager.getProductById(10);
+
+  const productUpdate = {
+    title: "Update",
+    stock: 5555,
+  };
+  await productManager.updateProduct(2, productUpdate);
+  await productManager.updateProduct(20, productUpdate);
+  await productManager.deleteProduct(1);
+  await productManager.deleteProduct(10);
+
+  products = await productManager.getProducts();
+  console.log(products);
 };
 
 main();

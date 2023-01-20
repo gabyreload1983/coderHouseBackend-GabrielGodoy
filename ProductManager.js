@@ -12,7 +12,14 @@ export default class ProductManager {
     return products[products.length - 1].id + 1;
   };
 
-  addProduct = async (title, description, price, thumbnail, code, stock) => {
+  addProduct = async ({
+    title,
+    description,
+    price,
+    thumbnail,
+    code,
+    stock,
+  }) => {
     try {
       if (
         [title, description, price, thumbnail, code, stock].some(
@@ -52,9 +59,8 @@ export default class ProductManager {
 
   getProducts = async () => {
     try {
-      const data = await fs.promises.readFile(this.path, "utf-8");
-      const products = await JSON.parse(data);
-      return products;
+      const products = await fs.promises.readFile(this.path, "utf-8");
+      return await JSON.parse(products);
     } catch (error) {
       console.log(`Error al obtener productos: ${error}`);
     }
@@ -74,7 +80,38 @@ export default class ProductManager {
     }
   };
 
-  updateProduct = async (id, product) => {};
+  updateProduct = async (id, product) => {
+    try {
+      const products = await this.getProducts();
+      const exists = products.some((p) => p.id === id);
+      if (!exists) throw new Error(`No existe un producto con el id ${id}`);
 
-  deleteProduct = async (id) => {};
+      const updateProducts = products.map((p) => {
+        return p.id === id ? { ...p, ...product } : p;
+      });
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(updateProducts, null, "\t")
+      );
+    } catch (error) {
+      console.log(`Error al actualizar producto: ${error}`);
+    }
+  };
+
+  deleteProduct = async (id) => {
+    try {
+      const products = await this.getProducts();
+      const exists = products.some((p) => p.id === id);
+      if (!exists) throw new Error(`No existe un producto con el id ${id}`);
+
+      const filterProducts = products.filter((p) => p.id !== id);
+
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(filterProducts, null, "\t")
+      );
+    } catch (error) {
+      console.log(`Error al borrar producto: ${error}`);
+    }
+  };
 }
