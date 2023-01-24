@@ -6,36 +6,32 @@ const path = "./files/products.json";
 const main = async () => {
   const productManager = new ProductManager(path);
 
-  let products = await productManager.getProducts();
-  console.log(products);
+  console.log(await productManager.getProducts());
 
   await productManager.addProduct(productsTest[0]);
   await productManager.addProduct(productsTest[1]);
   await productManager.addProduct(productsTest[1]);
 
-  products = await productManager.getProducts();
-  console.log(products);
+  console.log(await productManager.getProducts());
 
   await productManager.addProduct(productsTest[2]);
   await productManager.addProduct(productsTest[3]);
   await productManager.addProduct(productsTest[4]);
 
-  let product = await productManager.getProductById(1);
-  console.log(product);
-
+  console.log(await productManager.getProductById(1));
   await productManager.getProductById(10);
 
   const productUpdate = {
     title: "Update",
     stock: 5555,
+    id: 55,
   };
   await productManager.updateProduct(2, productUpdate);
   await productManager.updateProduct(20, productUpdate);
   await productManager.deleteProduct(1);
   await productManager.deleteProduct(10);
 
-  products = await productManager.getProducts();
-  console.log(products);
+  console.log(await productManager.getProducts());
 };
 
 main();

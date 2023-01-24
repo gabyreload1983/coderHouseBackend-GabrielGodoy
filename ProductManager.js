@@ -5,11 +5,14 @@ export default class ProductManager {
     this.path = path;
   }
 
-  generateId = (products) => {
-    if (products.length === 0) {
-      return 1;
-    }
-    return products[products.length - 1].id + 1;
+  generateId = async () => {
+    const products = await this.getProducts();
+    return products.length === 0 ? 1 : products[products.length - 1].id + 1;
+  };
+
+  validateId = async (id) => {
+    const products = await this.getProducts();
+    return products.some((p) => p.id === id);
   };
 
   addProduct = async ({
@@ -37,7 +40,7 @@ export default class ProductManager {
       }
 
       const product = {
-        id: this.generateId(products),
+        id: await this.generateId(),
         title,
         description,
         price,
@@ -59,8 +62,9 @@ export default class ProductManager {
 
   getProducts = async () => {
     try {
-      const products = await fs.promises.readFile(this.path, "utf-8");
-      return await JSON.parse(products);
+      const data = await fs.promises.readFile(this.path, "utf-8");
+      const products = await JSON.parse(data);
+      return products;
     } catch (error) {
       console.log(`Error al obtener productos: ${error}`);
     }
@@ -71,10 +75,8 @@ export default class ProductManager {
       const products = await this.getProducts();
       const product = products.find((p) => p.id === id);
 
-      if (product) {
-        return product;
-      }
-      throw new Error("Not Found");
+      if (product) return product;
+      throw new Error(`No existe un producto con el id ${id}`);
     } catch (error) {
       console.log(`Error al obtener producto: ${error}`);
     }
@@ -82,9 +84,12 @@ export default class ProductManager {
 
   updateProduct = async (id, product) => {
     try {
+      if (!(await this.validateId(id)))
+        throw new Error(`No existe un producto con el id ${id}`);
+
+      if (Object.keys(product).some((k) => k === "id")) delete product.id;
+
       const products = await this.getProducts();
-      const exists = products.some((p) => p.id === id);
-      if (!exists) throw new Error(`No existe un producto con el id ${id}`);
 
       const updateProducts = products.map((p) => {
         return p.id === id ? { ...p, ...product } : p;
@@ -100,9 +105,10 @@ export default class ProductManager {
 
   deleteProduct = async (id) => {
     try {
+      if (!(await this.validateId(id)))
+        throw new Error(`No existe un producto con el id ${id}`);
+
       const products = await this.getProducts();
-      const exists = products.some((p) => p.id === id);
-      if (!exists) throw new Error(`No existe un producto con el id ${id}`);
 
       const filterProducts = products.filter((p) => p.id !== id);
 
