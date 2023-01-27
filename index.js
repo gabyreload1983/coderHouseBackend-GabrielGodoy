@@ -1,9 +1,13 @@
 import ProductManager from "./ProductManager.js";
 import { productsTest } from "./productsTest.js";
+import fs from "fs";
 
 const path = "./files/products.json";
 
 const main = async () => {
+  const exist = fs.existsSync(path);
+  if (!exist) await fs.promises.writeFile(path, JSON.stringify([]));
+
   const productManager = new ProductManager(path);
 
   console.log(await productManager.getProducts());

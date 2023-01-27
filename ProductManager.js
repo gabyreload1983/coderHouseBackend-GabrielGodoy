@@ -15,6 +15,11 @@ export default class ProductManager {
     return products.some((p) => p.id === id);
   };
 
+  writeInfo = async (data) =>
+    await fs.promises.writeFile(this.path, JSON.stringify(data, null, "\t"));
+
+  readInfo = async () => await fs.promises.readFile(this.path, "utf-8");
+
   addProduct = async ({
     title,
     description,
@@ -51,10 +56,7 @@ export default class ProductManager {
 
       products.push(product);
 
-      await fs.promises.writeFile(
-        this.path,
-        JSON.stringify(products, null, "\t")
-      );
+      await this.writeInfo(products);
     } catch (error) {
       console.log(`Error al agregar producto: ${error}`);
     }
@@ -62,9 +64,12 @@ export default class ProductManager {
 
   getProducts = async () => {
     try {
-      const data = await fs.promises.readFile(this.path, "utf-8");
-      const products = await JSON.parse(data);
-      return products;
+      let data = await this.readInfo();
+      if (!data) {
+        await this.writeInfo([]);
+        data = await this.readInfo();
+      }
+      return JSON.parse(data);
     } catch (error) {
       console.log(`Error al obtener productos: ${error}`);
     }
@@ -94,10 +99,8 @@ export default class ProductManager {
       const updateProducts = products.map((p) => {
         return p.id === id ? { ...p, ...product } : p;
       });
-      await fs.promises.writeFile(
-        this.path,
-        JSON.stringify(updateProducts, null, "\t")
-      );
+
+      await this.writeInfo(updateProducts);
     } catch (error) {
       console.log(`Error al actualizar producto: ${error}`);
     }
@@ -112,10 +115,7 @@ export default class ProductManager {
 
       const filterProducts = products.filter((p) => p.id !== id);
 
-      await fs.promises.writeFile(
-        this.path,
-        JSON.stringify(filterProducts, null, "\t")
-      );
+      await this.writeInfo(filterProducts);
     } catch (error) {
       console.log(`Error al borrar producto: ${error}`);
     }
