@@ -1,21 +1,26 @@
 {
-  "name": "proyecto",
+  "name": "backend-ecommerce",
   "type": "module",
   "version": "1.0.0",
   "description": "## PROGRAMACION BACKEND - Comisión 44985",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gabyreload1983/coderHouseBackend-GabrielGodoy.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gabriel Godoy",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/gabyreload1983/coderHouseBackend-GabrielGodoy/issues"
   },
-  "homepage": "https://github.com/gabyreload1983/coderHouseBackend-GabrielGodoy#readme"
+  "homepage": "https://github.com/gabyreload1983/coderHouseBackend-GabrielGodoy#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }

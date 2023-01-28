@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "title": "producto prueba1",
+    "description": "Este es un producto prueba1",
+    "price": 100,
+    "thumbnail": "Sin imagen1",
+    "code": "abc111",
+    "stock": 11
+  },
+  {
+    "id": 2,
+    "title": "producto prueba2",
+    "description": "Este es un producto prueba2",
+    "price": 200,
+    "thumbnail": "Sin imagen2",
+    "code": "abc222",
+    "stock": 22
+  },
+  {
+    "id": 3,
+    "title": "producto prueba3",
+    "description": "Este es un producto prueba3",
+    "price": 300,
+    "thumbnail": "Sin imagen3",
+    "code": "abc333",
+    "stock": 33
+  },
+  {
+    "id": 4,
+    "title": "producto prueba4",
+    "description": "Este es un producto prueba4",
+    "price": 400,
+    "thumbnail": "Sin imagen4",
+    "code": "abc444",
+    "stock": 44
+  },
+  {
+    "id": 5,
+    "title": "producto prueba5",
+    "description": "Este es un producto prueba5",
+    "price": 500,
+    "thumbnail": "Sin imagen5",
+    "code": "abc555",
+    "stock": 55
+  },
+  {
+    "id": 6,
+    "title": "producto prueba6",
+    "description": "Este es un producto prueba6",
+    "price": 600,
+    "thumbnail": "Sin imagen6",
+    "code": "abc666",
+    "stock": 66
+  },
+  {
+    "id": 7,
+    "title": "producto prueba7",
+    "description": "Este es un producto prueba7",
+    "price": 700,
+    "thumbnail": "Sin imagen7",
+    "code": "abc777",
+    "stock": 77
+  },
+  {
+    "id": 8,
+    "title": "producto prueba8",
+    "description": "Este es un producto prueba8",
+    "price": 800,
+    "thumbnail": "Sin imagen8",
+    "code": "abc888",
+    "stock": 88
+  },
+  {
+    "id": 9,
+    "title": "producto prueba9",
+    "description": "Este es un producto prueba9",
+    "price": 900,
+    "thumbnail": "Sin imagen9",
+    "code": "abc999",
+    "stock": 99
+  },
+  {
+    "id": 10,
+    "title": "producto prueba10",
+    "description": "Este es un producto prueba10",
+    "price": 1000,
+    "thumbnail": "Sin imagen10",
+    "code": "abc101010",
+    "stock": 1010
+  }
+]
