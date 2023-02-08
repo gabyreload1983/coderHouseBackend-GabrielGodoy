@@ -22,4 +22,16 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:cid", async (req, res) => {
+  const { cid } = req.params;
+  const data = await readInfo(cartsPath);
+  const carts = JSON.parse(data);
+  const cart = carts.find((c) => c.id === Number(cid));
+  if (!cart)
+    return res
+      .status(404)
+      .send({ status: "Error", message: "No existe ese id de carrito" });
+  res.send({ status: "success", products: cart.products });
+});
+
 export default router;
