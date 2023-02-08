@@ -122,8 +122,10 @@ export default class ProductManager {
       const filterProducts = products.filter((p) => p.id !== id);
 
       await this.writeInfo(filterProducts);
+      return { status: "success" };
     } catch (error) {
       console.log(`Error al borrar producto: ${error}`);
+      return { status: "error", error: error.message };
     }
   };
 }
