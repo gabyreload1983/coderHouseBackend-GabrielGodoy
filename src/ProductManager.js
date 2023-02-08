@@ -23,14 +23,16 @@ export default class ProductManager {
   addProduct = async ({
     title,
     description,
-    price,
-    thumbnail,
     code,
+    price,
+    status = true,
     stock,
+    category,
+    thumbnail = [],
   }) => {
     try {
       if (
-        [title, description, price, thumbnail, code, stock].some(
+        [title, description, code, price, status, stock, category].some(
           (element) =>
             element === undefined || element === null || element.length === 0
         )
@@ -57,8 +59,10 @@ export default class ProductManager {
       products.push(product);
 
       await this.writeInfo(products);
+      return { status: "success" };
     } catch (error) {
       console.log(`Error al agregar producto: ${error}`);
+      return { status: "error", error };
     }
   };
 
@@ -101,8 +105,10 @@ export default class ProductManager {
       });
 
       await this.writeInfo(updateProducts);
+      return { status: "success" };
     } catch (error) {
       console.log(`Error al actualizar producto: ${error}`);
+      return { status: "error", error: error.message };
     }
   };
 
