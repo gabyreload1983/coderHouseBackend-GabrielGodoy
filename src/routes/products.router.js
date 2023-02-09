@@ -14,7 +14,18 @@ const productService = new ProductService(productsPath);
 router.get("/", async (req, res) => {
   try {
     let { limit } = req.query;
+
+    if (limit === undefined) {
+      const products = await productService.getProducts();
+      return res.send(products);
+    }
+
     limit = Number(limit);
+    if (isNaN(limit) || limit <= 0)
+      return res.status(400).send({
+        status: "error",
+        message: "Debe ingresar un numero mayor a 0",
+      });
 
     const products = await productService.getProducts();
 
