@@ -1,23 +1,21 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { __dirname, generateId, writeInfo, readInfo } from "../utils.js";
+import { getAbsolutePath } from "../utils.js";
 import ProductService from "../services/ProductService.js";
+import CartService from "../services/CartService.js";
 
 const router = Router();
 
-const cartsPath = path.join(__dirname, "/data/carts.json");
-if (!fs.existsSync(cartsPath))
-  await fs.promises.writeFile(cartsPath, JSON.stringify([]));
+const cartsPath = await getAbsolutePath("/data/carts.json");
+const productsPath = await getAbsolutePath("/data/products.json");
+const cartService = new CartService(cartsPath);
+const productService = new ProductService(productsPath);
 
 router.post("/", async (req, res) => {
   try {
-    const data = await readInfo(cartsPath);
-    const carts = JSON.parse(data);
-    const cart = { id: generateId(carts), products: [] };
-    carts.push(cart);
-    await writeInfo(carts, cartsPath);
-    res.send({ status: "success", message: "cart created" });
+    const response = await cartService.createCart();
+    response.status === "success"
+      ? res.send({ status: "success", message: "cart created" })
+      : res.status(400).send({ status: "error", message: response.error });
   } catch (error) {
     console.log(error);
   }
@@ -25,9 +23,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
   const { cid } = req.params;
-  const data = await readInfo(cartsPath);
-  const carts = JSON.parse(data);
-  const cart = carts.find((c) => c.id === Number(cid));
+  const cart = await cartService.getCart(cid);
   if (!cart)
     return res
       .status(404)
@@ -39,39 +35,22 @@ router.post("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
 
-    const data = await readInfo(cartsPath);
-    const carts = JSON.parse(data);
-    const cart = carts.find((c) => c.id === Number(cid));
+    const cart = await cartService.getCart(cid);
     if (!cart)
       return res
         .status(404)
         .send({ status: "Error", message: "No existe ese id de carrito" });
 
-    const productsPath = path.join(__dirname, "/data/products.json");
-    if (!fs.existsSync(productsPath))
-      await fs.promises.writeFile(productsPath, JSON.stringify([]));
-    const productService = new ProductService(productsPath);
     const product = await productService.getProductById(Number(pid));
     if (!product)
       return res
         .status(404)
         .send({ status: "Error", message: "No existe ese id de producto" });
 
-    const newCarts = carts.map((c) => {
-      if (c.id === Number(cid)) {
-        const index = c.products.findIndex((p) => p.product === Number(pid));
-        if (index === -1) {
-          c.products.push({ product: Number(pid), quantity: 1 });
-          return c;
-        }
-        c.products[index].quantity++;
-      }
-      return c;
-    });
-
-    await writeInfo(newCarts, cartsPath);
-
-    res.send({ status: "success" });
+    const response = await cartService.addProduct(cid, pid);
+    response.status === "success"
+      ? res.send({ status: "success", message: "Product added." })
+      : res.status(400).send({ status: "error", message: response.error });
   } catch (error) {
     console.log(error);
   }
