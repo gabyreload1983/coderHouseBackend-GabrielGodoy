@@ -2,11 +2,11 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 import { __dirname, generateId, writeInfo, readInfo } from "../utils.js";
-import ProductManager from "../ProductManager.js";
+import ProductService from "../services/ProductService.js";
 
 const router = Router();
 
-const cartsPath = path.join(__dirname, "../files/carts.json");
+const cartsPath = path.join(__dirname, "/data/carts.json");
 if (!fs.existsSync(cartsPath))
   await fs.promises.writeFile(cartsPath, JSON.stringify([]));
 
@@ -32,7 +32,7 @@ router.get("/:cid", async (req, res) => {
     return res
       .status(404)
       .send({ status: "Error", message: "No existe ese id de carrito" });
-  res.send({ status: "success", products: cart.products });
+  res.send({ status: "success", cart: cart });
 });
 
 router.post("/:cid/product/:pid", async (req, res) => {
@@ -47,11 +47,11 @@ router.post("/:cid/product/:pid", async (req, res) => {
         .status(404)
         .send({ status: "Error", message: "No existe ese id de carrito" });
 
-    const productsPath = path.join(__dirname, "../files/products.json");
+    const productsPath = path.join(__dirname, "/data/products.json");
     if (!fs.existsSync(productsPath))
       await fs.promises.writeFile(productsPath, JSON.stringify([]));
-    const productManager = new ProductManager(productsPath);
-    const product = await productManager.getProductById(Number(pid));
+    const productService = new ProductService(productsPath);
+    const product = await productService.getProductById(Number(pid));
     if (!product)
       return res
         .status(404)
@@ -60,7 +60,6 @@ router.post("/:cid/product/:pid", async (req, res) => {
     const newCarts = carts.map((c) => {
       if (c.id === Number(cid)) {
         const index = c.products.findIndex((p) => p.product === Number(pid));
-        console.log(index);
         if (index === -1) {
           c.products.push({ product: Number(pid), quantity: 1 });
           return c;

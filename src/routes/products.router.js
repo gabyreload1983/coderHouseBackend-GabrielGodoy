@@ -1,22 +1,22 @@
 import { Router } from "express";
 import fs from "fs";
 import path from "path";
-import ProductManager from "../ProductManager.js";
+import ProductService from "../services/ProductService.js";
 import { __dirname } from "../utils.js";
 
 const router = Router();
 
-const productsPath = path.join(__dirname, "../files/products.json");
+const productsPath = path.join(__dirname, "/data/products.json");
 if (!fs.existsSync(productsPath))
   await fs.promises.writeFile(productsPath, JSON.stringify([]));
-const productManager = new ProductManager(productsPath);
+const productService = new ProductService(productsPath);
 
 router.get("/", async (req, res) => {
   try {
     let { limit } = req.query;
     limit = Number(limit);
 
-    const products = await productManager.getProducts();
+    const products = await productService.getProducts();
 
     if (limit > 0) return res.send(products.slice(0, limit));
 
@@ -30,7 +30,7 @@ router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
 
-    const product = await productManager.getProductById(Number(pid));
+    const product = await productService.getProductById(Number(pid));
 
     if (product) return res.send(product);
 
@@ -43,7 +43,7 @@ router.get("/:pid", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const product = req.body;
-    const response = await productManager.addProduct(product);
+    const response = await productService.addProduct(product);
     if (response.error)
       return res.status(400).send({ error: response.error.message });
 
@@ -58,7 +58,7 @@ router.put("/:pid", async (req, res) => {
     const { pid } = req.params;
     const product = req.body;
 
-    const response = await productManager.updateProduct(Number(pid), product);
+    const response = await productService.updateProduct(Number(pid), product);
     return response.status === "success"
       ? res.send({ status: "success", message: "Product update" })
       : res.status(404).send({
@@ -74,7 +74,7 @@ router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
 
-    const response = await productManager.deleteProduct(Number(pid));
+    const response = await productService.deleteProduct(Number(pid));
     return response.status === "success"
       ? res.send({ status: "success", message: "Product delete" })
       : res.status(404).send({
