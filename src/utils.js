@@ -11,6 +11,10 @@ const generateId = (array) => {
   return array.length === 0 ? 1 : array[array.length - 1].id + 1;
 };
 
+const validateId = (id, array) => {
+  return array.some((p) => p.id === Number(id));
+};
+
 const getAbsolutePath = async (relativePath) => {
   const absolutePath = path.join(__dirname, relativePath);
   if (!fs.existsSync(absolutePath))
@@ -23,4 +27,11 @@ const writeInfo = async (data, path) =>
 
 const readInfo = async (path) => await fs.promises.readFile(path, "utf-8");
 
-export { __dirname, generateId, writeInfo, readInfo, getAbsolutePath };
+export {
+  __dirname,
+  generateId,
+  validateId,
+  writeInfo,
+  readInfo,
+  getAbsolutePath,
+};
