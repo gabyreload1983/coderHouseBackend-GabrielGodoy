@@ -1,14 +1,10 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
 import ProductService from "../services/ProductService.js";
-import { __dirname } from "../utils.js";
+import { getAbsolutePath } from "../utils.js";
 
 const router = Router();
 
-const productsPath = path.join(__dirname, "/data/products.json");
-if (!fs.existsSync(productsPath))
-  await fs.promises.writeFile(productsPath, JSON.stringify([]));
+const productsPath = await getAbsolutePath("/data/products.json");
 const productService = new ProductService(productsPath);
 
 router.get("/", async (req, res) => {
