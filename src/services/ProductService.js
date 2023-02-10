@@ -1,36 +1,23 @@
-import fs from "fs";
+import { generateId, validateId, writeInfo, readInfo } from "../utils.js";
 
-export default class ProductManager {
+export default class ProductService {
   constructor(path) {
     this.path = path;
   }
 
-  generateId = async () => {
-    const products = await this.getProducts();
-    return products.length === 0 ? 1 : products[products.length - 1].id + 1;
-  };
-
-  validateId = async (id) => {
-    const products = await this.getProducts();
-    return products.some((p) => p.id === id);
-  };
-
-  writeInfo = async (data) =>
-    await fs.promises.writeFile(this.path, JSON.stringify(data, null, "\t"));
-
-  readInfo = async () => await fs.promises.readFile(this.path, "utf-8");
-
   addProduct = async ({
     title,
     description,
-    price,
-    thumbnail,
     code,
+    price,
+    status = true,
     stock,
+    category,
+    thumbnail = [],
   }) => {
     try {
       if (
-        [title, description, price, thumbnail, code, stock].some(
+        [title, description, code, price, status, stock, category].some(
           (element) =>
             element === undefined || element === null || element.length === 0
         )
@@ -45,7 +32,7 @@ export default class ProductManager {
       }
 
       const product = {
-        id: await this.generateId(),
+        id: generateId(products),
         title,
         description,
         price,
@@ -56,19 +43,17 @@ export default class ProductManager {
 
       products.push(product);
 
-      await this.writeInfo(products);
+      await writeInfo(products, this.path);
+      return { status: "success" };
     } catch (error) {
       console.log(`Error al agregar producto: ${error}`);
+      return { status: "error", error };
     }
   };
 
   getProducts = async () => {
     try {
-      let data = await this.readInfo();
-      if (!data) {
-        await this.writeInfo([]);
-        data = await this.readInfo();
-      }
+      let data = await readInfo(this.path);
       return JSON.parse(data);
     } catch (error) {
       console.log(`Error al obtener productos: ${error}`);
@@ -89,35 +74,37 @@ export default class ProductManager {
 
   updateProduct = async (id, product) => {
     try {
-      if (!(await this.validateId(id)))
+      const products = await this.getProducts();
+      if (!validateId(id, products))
         throw new Error(`No existe un producto con el id ${id}`);
 
       if (Object.keys(product).some((k) => k === "id")) delete product.id;
-
-      const products = await this.getProducts();
 
       const updateProducts = products.map((p) => {
         return p.id === id ? { ...p, ...product } : p;
       });
 
-      await this.writeInfo(updateProducts);
+      await writeInfo(updateProducts, this.path);
+      return { status: "success" };
     } catch (error) {
       console.log(`Error al actualizar producto: ${error}`);
+      return { status: "error", error: error.message };
     }
   };
 
   deleteProduct = async (id) => {
     try {
-      if (!(await this.validateId(id)))
-        throw new Error(`No existe un producto con el id ${id}`);
-
       const products = await this.getProducts();
+      if (!validateId(id, products))
+        throw new Error(`No existe un producto con el id ${id}`);
 
       const filterProducts = products.filter((p) => p.id !== id);
 
-      await this.writeInfo(filterProducts);
+      await writeInfo(filterProducts, this.path);
+      return { status: "success" };
     } catch (error) {
       console.log(`Error al borrar producto: ${error}`);
+      return { status: "error", error: error.message };
     }
   };
 }
