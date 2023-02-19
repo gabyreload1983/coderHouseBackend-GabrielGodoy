@@ -9,19 +9,27 @@ const productsPath = await getAbsolutePath("/data/products.json");
 const productService = new ProductService(productsPath);
 
 router.get("/", async (req, res) => {
-  const products = await productService.getProducts();
-  res.render("home", { products });
+  try {
+    const products = await productService.getProducts();
+    res.render("home", { products });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.get("/realtimeproducts", async (req, res) => {
-  const products = await productService.getProducts();
-  io.on("connection", (socket) => {
-    console.log(`Nuevo cliente conectado. ID: ${socket.id}`);
+  try {
+    const products = await productService.getProducts();
+    io.on("connection", (socket) => {
+      console.log(`Nuevo cliente conectado. ID: ${socket.id}`);
 
-    io.emit("realTimeProducts", products);
-  });
+      io.emit("realTimeProducts", products);
+    });
 
-  res.render("realTimeProducts", { products });
+    res.render("realTimeProducts", { products });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export default router;
