@@ -59,6 +59,16 @@ const formDeleteProduct = document.querySelector("#formDeleteProduct");
 deleteProduct.addEventListener("click", async (e) => {
   e.preventDefault();
   const id = formDeleteProduct.productId.value;
+  if (!id)
+    return Swal.fire({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      title: `Complete el campo ID`,
+      icon: "error",
+    });
+
   const response = await fetch(`http://localhost:8080/api/products/${id}`, {
     method: "DELETE",
   });
