@@ -51,12 +51,14 @@ router.post("/", async (req, res) => {
     const product = req.body;
     const response = await productService.addProduct(product);
     if (response.error)
-      return res.status(400).send({ error: response.error.message });
+      return res
+        .status(400)
+        .send({ status: "error", message: response.error.message });
 
     const products = await productService.getProducts();
     io.emit("realTimeProducts", products);
 
-    res.send({ message: "Product added" });
+    res.send({ status: "success", message: "Product added" });
   } catch (error) {
     console.log(error);
   }
@@ -90,7 +92,7 @@ router.delete("/:pid", async (req, res) => {
       return res.send({ status: "success", message: "Product delete" });
     }
     res.status(404).send({
-      error: "Error al borrar producto",
+      status: "error",
       message: response.error,
     });
   } catch (error) {
