@@ -40,7 +40,9 @@ router.get("/:pid", async (req, res) => {
 
     if (product) return res.send(product);
 
-    res.status(404).send({ Error: "El producto no existe!!!" });
+    res
+      .status(404)
+      .send({ status: "error", Error: "El producto no existe!!!" });
   } catch (error) {
     console.log(error);
   }
@@ -73,7 +75,7 @@ router.put("/:pid", async (req, res) => {
     return response.status === "success"
       ? res.send({ status: "success", message: "Product update" })
       : res.status(404).send({
-          error: "Error al actualizar producto",
+          status: "error",
           message: response.error,
         });
   } catch (error) {
