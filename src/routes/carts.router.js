@@ -27,7 +27,7 @@ router.get("/:cid", async (req, res) => {
   if (!cart)
     return res
       .status(404)
-      .send({ status: "Error", message: "No existe ese id de carrito" });
+      .send({ status: "error", message: "No existe ese id de carrito" });
   res.send({ status: "success", cart: cart });
 });
 
@@ -39,13 +39,13 @@ router.post("/:cid/product/:pid", async (req, res) => {
     if (!cart)
       return res
         .status(404)
-        .send({ status: "Error", message: "No existe ese id de carrito" });
+        .send({ status: "error", message: "No existe ese id de carrito" });
 
     const product = await productService.getProductById(Number(pid));
     if (!product)
       return res
         .status(404)
-        .send({ status: "Error", message: "No existe ese id de producto" });
+        .send({ status: "error", message: "No existe ese id de producto" });
 
     const response = await cartService.addProduct(cid, pid);
     response.status === "success"
