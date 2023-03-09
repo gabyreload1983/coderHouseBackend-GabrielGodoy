@@ -14,6 +14,7 @@ const productsSchema = new mongoose.Schema({
   code: {
     type: String,
     required: true,
+    unique: true,
   },
   price: {
     type: Number,
@@ -21,7 +22,7 @@ const productsSchema = new mongoose.Schema({
   },
   status: {
     type: Boolean,
-    required: true,
+    default: true,
   },
   stock: {
     type: Number,
