@@ -10,7 +10,9 @@ router.get("/", async (req, res) => {
   try {
     const products = await productsManager.getAll();
     res.render("home", { products });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.get("/realtimeproducts", async (req, res) => {
