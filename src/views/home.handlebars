@@ -2,7 +2,13 @@
   <h1>Products</h1>
   {{#each products}}
     <div>
-      <p>ID: {{this.id}} - {{this.title}} - ${{this.price}}</p>
+      <p>ID:
+        {{this._id}}
+        -
+        {{this.title}}
+        - ${{this.price}}
+        -
+        {{this.status}}</p>
     </div>
   {{/each}}
 </div>

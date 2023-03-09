@@ -4,7 +4,7 @@ const container = document.querySelector("#container");
 socket.on("realTimeProducts", (data) => {
   let products = "";
   data.forEach((p) => {
-    products += `<p>ID: ${p.id} - ${p.title} - $${p.price}<p/>`;
+    products += `<p>ID: ${p._id} - ${p.title} - $${p.price} - ${p.status}<p/>`;
   });
   container.innerHTML = products;
 });
