@@ -1,4 +1,4 @@
-import { productModel } from "../models/products";
+import { productModel } from "../models/products.js";
 
 export default class Products {
   constructor() {
@@ -8,6 +8,15 @@ export default class Products {
   getAll = async () => {
     try {
       const products = await productModel.find();
+      return products.map((product) => product.toObject());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getLimit = async (limit) => {
+    try {
+      const products = await productModel.find().limit(limit);
       return products.map((product) => product.toObject());
     } catch (error) {
       console.log(error);
@@ -35,6 +44,15 @@ export default class Products {
   updateProduct = async (pid, product) => {
     try {
       const result = await productModel.updateOne({ _id: pid }, product);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  deleteProduct = async (pid) => {
+    try {
+      const result = await productModel.deleteOne({ _id: pid });
       return result;
     } catch (error) {
       console.log(error);
