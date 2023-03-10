@@ -7,7 +7,7 @@ export default class Products {
 
   createCart = async () => {
     try {
-      const result = await cartModel.create();
+      const result = await cartModel.create({});
       return result;
     } catch (error) {
       console.log(error);
@@ -16,16 +16,16 @@ export default class Products {
 
   getCart = async (cid) => {
     try {
-      const result = await cartModel.find({ _id: cid });
+      const result = await cartModel.findOne({ _id: cid });
       return result;
     } catch (error) {
       console.log(error);
     }
   };
 
-  addProduct = async (cid, pid) => {
+  addProduct = async (cid, cart) => {
     try {
-      const result = await cartModel.updateOne({ _id: cid }, { pid });
+      const result = await cartModel.updateOne({ _id: cid }, cart);
       return result;
     } catch (error) {
       console.log(error);
