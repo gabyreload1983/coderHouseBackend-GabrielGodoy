@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { getAbsolutePath } from "../utils.js";
-import ProductService from "../services/ProductService.js";
-import CartService from "../services/CartService.js";
+import { getAbsolutePath } from "../../utils.js";
+import ProductService from "../../dao/fileManagers/ProductService.js";
+import CartService from "../../dao/fileManagers/CartService.js";
 
 const router = Router();
 

@@ -2,9 +2,9 @@ import express from "express";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
-import viewsRouter from "./routes/views.router.js";
-import productsRouter from "./routes/products.router.js";
-import cartsRouter from "./routes/carts.router.js";
+import viewsRouter from "./routes/fileSystem/views.router.js";
+import productsRouter from "./routes/fileSystem/products.router.js";
+import cartsRouter from "./routes/fileSystem/carts.router.js";
 
 const app = express();
 

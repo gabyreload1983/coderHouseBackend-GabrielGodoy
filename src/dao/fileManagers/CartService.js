@@ -1,4 +1,4 @@
-import { generateId, readInfo, writeInfo } from "../utils.js";
+import { generateId, readInfo, writeInfo } from "../../utils.js";
 
 export default class CartService {
   constructor(path) {
@@ -9,7 +9,7 @@ export default class CartService {
     try {
       const data = await readInfo(this.path);
       const carts = JSON.parse(data);
-      const cart = { id: generateId(carts), products: [] };
+      const cart = { _id: generateId(carts), products: [] };
       carts.push(cart);
       await writeInfo(carts, this.path);
       return { status: "success" };
@@ -23,7 +23,7 @@ export default class CartService {
     try {
       const data = await readInfo(this.path);
       const carts = JSON.parse(data);
-      return carts.find((c) => c.id === Number(cid));
+      return carts.find((c) => c._id === Number(cid));
     } catch (error) {
       console.log(error);
     }
@@ -34,7 +34,7 @@ export default class CartService {
       const data = await readInfo(this.path);
       const carts = JSON.parse(data);
       const newCarts = carts.map((c) => {
-        if (c.id === Number(cid)) {
+        if (c._id === Number(cid)) {
           const index = c.products.findIndex((p) => p.product === Number(pid));
           if (index === -1) {
             c.products.push({ product: Number(pid), quantity: 1 });
