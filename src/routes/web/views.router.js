@@ -26,8 +26,7 @@ router.get("/realtimeproducts", async (req, res) => {
 });
 
 router.get("/chat", async (req, res) => {
-  const messages = await messagesManager.getAll();
-  res.render("chat", { messages });
+  res.render("chat");
 });
 
 export default router;

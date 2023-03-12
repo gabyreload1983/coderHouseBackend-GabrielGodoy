@@ -41,7 +41,7 @@ socket.on("messageLogs", (data) => {
     <div class="card-body">
       <h5 class="card-title">${message.user}</h5>
       <p class="card-text">${message.message}</p>
-      <p class="card-text text-muted text-end">${message.time}<p/>
+      <p class="card-text text-muted text-end m-0">${message.createdAt}<p/>
     </div>
   </div>`;
   });
