@@ -38,7 +38,7 @@ router.get("/:pid", async (req, res) => {
       return res.status(404).send({ status: "error", message: "Invalid id!" });
 
     const product = await productsManager.getProduct(pid);
-    if (product?.length) return res.send({ status: "success", product });
+    if (product) return res.send({ status: "success", product });
     res
       .status(404)
       .send({ status: "error", Error: "The product does not exist!!!" });
