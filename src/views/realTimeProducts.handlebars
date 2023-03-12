@@ -69,7 +69,17 @@
             </tr>
           </thead>
           <tbody id="tbody-products">
-
+            {{#each products}}
+              <tr>
+                <td>{{this._id}}</td>
+                <td>{{this.title}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.code}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.status}}</td>
+                <td>{{this.category}}</td>
+              </tr>
+            {{/each}}
           </tbody>
         </table>
       </div>
