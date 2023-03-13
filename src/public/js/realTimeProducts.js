@@ -1,10 +1,19 @@
 const socket = io();
-const container = document.querySelector("#container");
+const container = document.querySelector("#tbody-products");
 
 socket.on("realTimeProducts", (data) => {
   let products = "";
   data.forEach((p) => {
-    products += `<p>ID: ${p.id} - ${p.title} - $${p.price}<p/>`;
+    products += `
+    <tr>
+      <td>${p._id}</td>
+      <td>${p.title}</td>
+      <td>${p.description}</td>
+      <td>${p.code}</td>
+      <td>${p.price}</td>
+      <td>${p.status}</td>
+      <td>${p.category}</td>
+  </tr>`;
   });
   container.innerHTML = products;
 });

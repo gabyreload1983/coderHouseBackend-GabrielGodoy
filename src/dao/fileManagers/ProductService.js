@@ -1,4 +1,4 @@
-import { generateId, validateId, writeInfo, readInfo } from "../utils.js";
+import { generateId, validateId, writeInfo, readInfo } from "../../utils.js";
 
 export default class ProductService {
   constructor(path) {
@@ -32,13 +32,15 @@ export default class ProductService {
       }
 
       const product = {
-        id: generateId(products),
+        _id: generateId(products),
         title,
         description,
         price,
+        status,
         thumbnail,
         code,
         stock,
+        category,
       };
 
       products.push(product);
@@ -63,7 +65,7 @@ export default class ProductService {
   getProductById = async (id) => {
     try {
       const products = await this.getProducts();
-      const product = products.find((p) => p.id === id);
+      const product = products.find((p) => p._id === id);
 
       if (product) return product;
       throw new Error(`No existe un producto con el id ${id}`);
@@ -78,10 +80,10 @@ export default class ProductService {
       if (!validateId(id, products))
         throw new Error(`No existe un producto con el id ${id}`);
 
-      if (Object.keys(product).some((k) => k === "id")) delete product.id;
+      if (Object.keys(product).some((k) => k === "_id")) delete product._id;
 
       const updateProducts = products.map((p) => {
-        return p.id === id ? { ...p, ...product } : p;
+        return p._id === id ? { ...p, ...product } : p;
       });
 
       await writeInfo(updateProducts, this.path);
@@ -98,7 +100,7 @@ export default class ProductService {
       if (!validateId(id, products))
         throw new Error(`No existe un producto con el id ${id}`);
 
-      const filterProducts = products.filter((p) => p.id !== id);
+      const filterProducts = products.filter((p) => p._id !== id);
 
       await writeInfo(filterProducts, this.path);
       return { status: "success" };

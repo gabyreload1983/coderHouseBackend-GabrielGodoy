@@ -2,9 +2,13 @@ import express from "express";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
-import viewsRouter from "./routes/views.router.js";
-import productsRouter from "./routes/products.router.js";
-import cartsRouter from "./routes/carts.router.js";
+import viewsRouter from "./routes/web/views.router.js";
+import productsRouter from "./routes/api/products.router.js";
+import cartsRouter from "./routes/api/carts.router.js";
+import { mongoose } from "mongoose";
+
+import Messages from "./dao/dbManagers/messages.js";
+const messagesManager = new Messages();
 
 const app = express();
 
@@ -21,6 +25,33 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
-const server = app.listen(8080, () => console.log("Listening on port 8080"));
+try {
+  await mongoose.connect(
+    "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority"
+  );
+  console.log("Connected to Atlas mongoDB");
+} catch (error) {
+  console.log(error);
+}
 
-export const io = new Server(server);
+const server = app.listen(8080, () => console.log("Listening on port 8080"));
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log(`Nuevo cliente conectado. ID: ${socket.id}`);
+
+  socket.on("message", async ({ user, message }) => {
+    await messagesManager.addMessage(user, message);
+    const messages = await messagesManager.getAll();
+
+    io.emit("messageLogs", messages);
+  });
+
+  socket.on("authenticated", async (user) => {
+    const messages = await messagesManager.getAll();
+    socket.emit("messageLogs", messages);
+    socket.broadcast.emit("newUserConnected", user);
+  });
+});
+
+export { io };

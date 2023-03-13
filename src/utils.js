@@ -7,11 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const generateId = (array) => {
-  return array.length === 0 ? 1 : array[array.length - 1].id + 1;
+  return array.length === 0 ? 1 : array[array.length - 1]._id + 1;
 };
 
 const validateId = (id, array) => {
-  return array.some((p) => p.id === Number(id));
+  return array.some((p) => p._id === Number(id));
 };
 
 const getAbsolutePath = async (relativePath) => {
