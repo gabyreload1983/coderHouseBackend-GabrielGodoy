@@ -27,7 +27,7 @@ app.use("/", viewsRouter);
 
 try {
   await mongoose.connect(
-    "mongodb+srv://gabriel:Jano1987@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority"
+    "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority"
   );
   console.log("Connected to Atlas mongoDB");
 } catch (error) {
