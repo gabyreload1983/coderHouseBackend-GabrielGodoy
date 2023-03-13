@@ -1,4 +1,5 @@
 const socket = io();
+moment.locale("es");
 
 let user;
 const chatBox = document.querySelector("#chatBox");
@@ -41,7 +42,9 @@ socket.on("messageLogs", (data) => {
     <div class="card-body">
       <h5 class="card-title">${message.user}</h5>
       <p class="card-text">${message.message}</p>
-      <p class="card-text text-muted text-end m-0">${message.createdAt}<p/>
+      <p class="card-text text-muted text-end m-0">${moment(
+        message.createdAt
+      ).format("DD-MM-YYYY hh:mm a")}<p/>
     </div>
   </div>`;
   });
