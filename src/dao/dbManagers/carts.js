@@ -31,4 +31,16 @@ export default class Products {
       console.log(error);
     }
   };
+
+  deleteProduct = async (cid, pid) => {
+    try {
+      const result = await cartModel.updateOne(
+        { _id: cid },
+        { $pull: { products: { product: pid } } }
+      );
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
