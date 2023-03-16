@@ -9,22 +9,37 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    let { limit } = req.query;
-
-    if (limit === undefined) {
-      const products = await productsManager.getAll();
-      return res.send({ status: "success", products });
-    }
+    let { limit = 10, page = 1, query = "", sort = "" } = req.query;
 
     limit = Number(limit);
-    if (isNaN(limit) || limit <= 0)
+    page = Number(page);
+    if (isNaN(limit) || limit <= 0 || isNaN(page) || page <= 0)
       return res.status(400).send({
         status: "error",
         message: "You must enter a number greater than 0",
       });
 
-    const products = await productsManager.getLimit(limit);
-    res.send({ status: "success", products });
+    if (query) query = JSON.parse(query);
+
+    if (sort) {
+      sort = Number(sort);
+      if (isNaN(sort) || (sort !== 1 && sort !== -1))
+        return res.status(400).send({
+          status: "error",
+          message:
+            "To sort the result, you must enter the number 1 (DES) or -1 (ASC)",
+        });
+      sort = { price: sort };
+    }
+
+    const response = await productsManager.getPaginate(
+      limit,
+      page,
+      query,
+      sort
+    );
+
+    res.send(response);
   } catch (error) {
     console.log(error);
     res.status(500).send({ error });

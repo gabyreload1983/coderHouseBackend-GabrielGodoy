@@ -5,6 +5,43 @@ export default class Products {
     console.log("Working products with DB in mongoDB");
   }
 
+  getPaginate = async (limit, page, query, sort) => {
+    try {
+      const response = await productModel.paginate(query, {
+        limit,
+        page,
+        sort,
+      });
+
+      if (query) query = JSON.stringify(query);
+
+      response.status = "success";
+      response.prevLink = response.hasPrevPage
+        ? `http://localhost:8080/api/products?limit=${limit}&page=${
+            response.prevPage
+          }${query ? `&query=${query}` : ""}${
+            sort ? `&sort=${sort.price}` : ""
+          }`
+        : null;
+      response.nextLink = response.hasNextPage
+        ? `http://localhost:8080/api/products?limit=${limit}&page=${
+            response.nextPage
+          }${query ? `&query=${query}` : ""}${
+            sort ? `&sort=${sort.price}` : ""
+          }`
+        : null;
+
+      response.payload = response.docs;
+      delete response.docs;
+
+      return response;
+    } catch (error) {
+      console.log(error);
+      response.status = "error";
+      return response;
+    }
+  };
+
   getAll = async () => {
     try {
       const products = await productModel.find();
