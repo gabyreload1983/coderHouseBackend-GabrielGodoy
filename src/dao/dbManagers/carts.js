@@ -16,8 +16,10 @@ export default class Products {
 
   getCart = async (cid) => {
     try {
-      const result = await cartModel.findOne({ _id: cid });
-      return result;
+      const result = await cartModel
+        .findOne({ _id: cid })
+        .populate("products.product");
+      return result.toObject();
     } catch (error) {
       console.log(error);
     }
