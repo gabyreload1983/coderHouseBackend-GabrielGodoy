@@ -88,6 +88,33 @@ router.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
+router.put("/:cid/", async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const { newCart } = req.body;
+
+    if (!mongoose.isValidObjectId(cid))
+      return res
+        .status(404)
+        .send({ status: "error", message: "Invalid cart id!" });
+
+    const cart = await cartsManager.getCart(cid);
+    if (!cart)
+      return res
+        .status(404)
+        .send({ status: "error", message: "That cart id does not exist" });
+
+    const response = await cartsManager.update(cid, newCart);
+    if (response?.acknowledged)
+      return res.send({ status: "success", message: "Cart updated" });
+
+    res.status(400).send({ status: "error", message: "Error updating cart" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
+});
+
 router.delete("/:cid/products/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
