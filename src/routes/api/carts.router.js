@@ -115,6 +115,49 @@ router.put("/:cid/", async (req, res) => {
   }
 });
 
+router.put("/:cid/product/:pid", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+    if (!mongoose.isValidObjectId(cid))
+      return res
+        .status(404)
+        .send({ status: "error", message: "Invalid cart id!" });
+
+    if (!mongoose.isValidObjectId(pid))
+      return res
+        .status(404)
+        .send({ status: "error", message: "Invalid product id!" });
+
+    const cart = await cartsManager.getCart(cid);
+    if (!cart)
+      return res
+        .status(404)
+        .send({ status: "error", message: "That cart id does not exist" });
+
+    const product = await productsManager.getProduct(pid);
+    if (!product)
+      return res
+        .status(404)
+        .send({ status: "error", message: "That product id does not exist" });
+
+    const index = cart.products.findIndex(
+      (p) => p.product._id.toString() === pid
+    );
+    if (index !== -1) cart.products[index].quantity = quantity;
+
+    const response = await cartsManager.update(cid, cart);
+
+    if (response?.acknowledged)
+      return res.send({ status: "success", message: "Cart updated" });
+
+    res.status(400).send({ status: "error", message: "Error updating cart" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
+});
+
 router.delete("/:cid/products/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
