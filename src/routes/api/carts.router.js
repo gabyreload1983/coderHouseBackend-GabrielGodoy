@@ -68,9 +68,9 @@ router.post("/:cid/product/:pid", async (req, res) => {
         .status(404)
         .send({ status: "error", message: "That product id does not exist" });
 
-    console.log(cart);
-    console.log(pid);
-    const index = cart.products.findIndex((p) => p.product == pid);
+    const index = cart.products.findIndex(
+      (p) => p.product._id.toString() === pid
+    );
     if (index === -1) cart.products.push({ product: pid });
     if (index !== -1) cart.products[index].quantity += 1;
 
