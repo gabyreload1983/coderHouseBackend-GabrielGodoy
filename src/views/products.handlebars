@@ -1,0 +1,52 @@
+<div class="container">
+
+  <h1>Products</h1>
+  <div class="row">
+    <div class="col-12">
+      <h2>Lista de productos</h2>
+      <div id="container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Category</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-products">
+            {{#each response.payload}}
+              <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.category}}</td>
+                <td>
+                  <a href="#"><button class="btn btn-info">Detalle</button></a>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-success"
+                    onclick="addToCart('{{this._id}}')"
+                  >Agregar a carrito</button>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <div>
+          {{#if response.hasPrevPage}}
+            <a
+              href="http://localhost:8080/products?page={{response.prevPage}}"
+            ><button class="btn btn-outline-dark">Prev</button></a>
+          {{/if}}
+          {{#if response.hasNextPage}}
+            <a
+              href="http://localhost:8080/products?page={{response.nextPage}}"
+            ><button class="btn btn-outline-dark">Next</button></a>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="/js/products.js"></script>

@@ -29,4 +29,10 @@ router.get("/chat", async (req, res) => {
   res.render("chat");
 });
 
+router.get("/products/", async (req, res) => {
+  const { limit = 5, page = 1 } = req.query;
+  const response = await productsManager.getPaginate(limit, page);
+  res.render("products", { response });
+});
+
 export default router;

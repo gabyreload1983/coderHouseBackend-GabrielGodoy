@@ -5,12 +5,13 @@ export default class Products {
     console.log("Working products with DB in mongoDB");
   }
 
-  getPaginate = async (limit, page, query, sort) => {
+  getPaginate = async (limit = 10, page = 1, query = "", sort = "") => {
     try {
       const response = await productModel.paginate(query, {
         limit,
         page,
         sort,
+        lean: true,
       });
 
       if (query) query = JSON.stringify(query);
