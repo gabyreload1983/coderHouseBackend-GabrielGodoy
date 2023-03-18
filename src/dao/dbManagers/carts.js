@@ -45,4 +45,13 @@ export default class Products {
       console.log(error);
     }
   };
+
+  deleteAllProducts = async (cid) => {
+    try {
+      const result = await cartModel.updateOne({ _id: cid }, { products: [] });
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }

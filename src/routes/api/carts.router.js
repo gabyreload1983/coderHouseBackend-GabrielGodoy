@@ -124,4 +124,30 @@ router.delete("/:cid/products/:pid", async (req, res) => {
   }
 });
 
+router.delete("/:cid/", async (req, res) => {
+  try {
+    const { cid } = req.params;
+    if (!mongoose.isValidObjectId(cid))
+      return res
+        .status(404)
+        .send({ status: "error", message: "Invalid cart id!" });
+
+    const cart = await cartsManager.getCart(cid);
+    if (!cart)
+      return res
+        .status(404)
+        .send({ status: "error", message: "That cart id does not exist" });
+
+    const response = await cartsManager.deleteAllProducts(cid);
+    if (response?.acknowledged)
+      res.send({
+        status: "success",
+        message: `All products was deleted from cart`,
+      });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
+});
+
 export default router;
