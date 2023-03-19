@@ -31,6 +31,15 @@ router.get("/chat", async (req, res) => {
 
 router.get("/products/", async (req, res) => {
   let { limit = 10, page = 1, query = "", sort = "" } = req.query;
+
+  limit = Number(limit);
+  page = Number(page);
+  if (isNaN(limit) || limit <= 0 || isNaN(page) || page <= 0)
+    return res.status(400).send({
+      status: "error",
+      message: "You must enter a number greater than 0",
+    });
+
   if (query) query = JSON.parse(query);
 
   if (sort) {
