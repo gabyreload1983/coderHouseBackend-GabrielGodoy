@@ -41,11 +41,15 @@
             <a href="{{response.prevLink}}"><button
                 class="btn btn-outline-dark"
               >Prev</button></a>
+          {{else}}
+            <button disabled class="btn btn-outline-dark">Prev</button>
           {{/if}}
           {{#if response.hasNextPage}}
             <a href="{{response.nextLink}}"><button
                 class="btn btn-outline-dark"
               >Next</button></a>
+          {{else}}
+            <button disabled class="btn btn-outline-dark">Next</button>
           {{/if}}
         </div>
       </div>
