@@ -1,9 +1,9 @@
 import { Router } from "express";
 import Products from "../../dao/dbManagers/products.js";
-import Messages from "../../dao/dbManagers/messages.js";
+import Carts from "../../dao/dbManagers/carts.js";
 
 const productsManager = new Products();
-const messagesManager = new Messages();
+const cartsManager = new Carts();
 
 const router = Router();
 
@@ -39,6 +39,12 @@ router.get("/products/:pid", async (req, res) => {
   const { pid } = req.params;
   const product = await productsManager.getProduct(pid);
   res.render("productDetail", product);
+});
+
+router.get("/carts/:cid", async (req, res) => {
+  const { cid } = req.params;
+  const cart = await cartsManager.getCart(cid);
+  res.render("cart", cart);
 });
 
 export default router;

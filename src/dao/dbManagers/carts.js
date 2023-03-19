@@ -19,7 +19,7 @@ export default class Products {
       const result = await cartModel
         .findOne({ _id: cid })
         .populate("products.product");
-      return result.toObject();
+      return result?.toObject();
     } catch (error) {
       console.log(error);
     }

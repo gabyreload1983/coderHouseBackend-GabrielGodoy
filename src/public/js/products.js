@@ -1,5 +1,21 @@
+let cid = "";
+const createCart = async () => {
+  const response = await fetch(`http://localhost:8080/api/carts/`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+  const json = await response.json();
+  cid = json.response._id;
+  localStorage.setItem("cid", cid);
+};
+
+localStorage.getItem("cid")
+  ? (cid = localStorage.getItem("cid"))
+  : createCart();
+
 const addToCart = async (pid) => {
-  const cid = "6417037139dfcbd8cd40ae4d";
   const response = await fetch(
     `http://localhost:8080/api/carts/${cid}/product/${pid}`,
     {
