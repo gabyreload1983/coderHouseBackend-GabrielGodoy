@@ -9,7 +9,6 @@
           <thead>
             <tr>
               <th scope="col">Title</th>
-              <th scope="col">Category</th>
               <th scope="col"></th>
               <th scope="col"></th>
             </tr>
@@ -18,9 +17,10 @@
             {{#each response.payload}}
               <tr>
                 <td>{{this.title}}</td>
-                <td>{{this.category}}</td>
                 <td>
-                  <a href="#"><button class="btn btn-info">Detalle</button></a>
+                  <a href="/products/{{this._id}}"><button
+                      class="btn btn-info"
+                    >Detalle</button></a>
                 </td>
                 <td>
                   <button

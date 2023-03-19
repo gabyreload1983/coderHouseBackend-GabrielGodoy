@@ -35,4 +35,10 @@ router.get("/products/", async (req, res) => {
   res.render("products", { response });
 });
 
+router.get("/products/:pid", async (req, res) => {
+  const { pid } = req.params;
+  const product = await productsManager.getProduct(pid);
+  res.render("productDetail", product);
+});
+
 export default router;
