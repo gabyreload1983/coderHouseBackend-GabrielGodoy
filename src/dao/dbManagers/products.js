@@ -18,14 +18,14 @@ export default class Products {
 
       response.status = "success";
       response.prevLink = response.hasPrevPage
-        ? `http://localhost:8080/api/products?limit=${limit}&page=${
+        ? `http://localhost:8080/products?limit=${limit}&page=${
             response.prevPage
           }${query ? `&query=${query}` : ""}${
             sort ? `&sort=${sort.price}` : ""
           }`
         : null;
       response.nextLink = response.hasNextPage
-        ? `http://localhost:8080/api/products?limit=${limit}&page=${
+        ? `http://localhost:8080/products?limit=${limit}&page=${
             response.nextPage
           }${query ? `&query=${query}` : ""}${
             sort ? `&sort=${sort.price}` : ""

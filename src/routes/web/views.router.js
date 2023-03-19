@@ -30,8 +30,20 @@ router.get("/chat", async (req, res) => {
 });
 
 router.get("/products/", async (req, res) => {
-  const { limit = 5, page = 1 } = req.query;
-  const response = await productsManager.getPaginate(limit, page);
+  let { limit = 10, page = 1, query = "", sort = "" } = req.query;
+  if (query) query = JSON.parse(query);
+
+  if (sort) {
+    sort = Number(sort);
+    if (isNaN(sort) || (sort !== 1 && sort !== -1))
+      return res.status(400).send({
+        status: "error",
+        message:
+          "To sort the result, you must enter the number 1 (DES) or -1 (ASC)",
+      });
+    sort = { price: sort };
+  }
+  const response = await productsManager.getPaginate(limit, page, query, sort);
   res.render("products", { response });
 });
 

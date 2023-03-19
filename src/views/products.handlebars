@@ -9,6 +9,8 @@
           <thead>
             <tr>
               <th scope="col">Title</th>
+              <th scope="col">Category</th>
+              <th scope="col">Price</th>
               <th scope="col"></th>
               <th scope="col"></th>
             </tr>
@@ -17,6 +19,8 @@
             {{#each response.payload}}
               <tr>
                 <td>{{this.title}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.price}}</td>
                 <td>
                   <a href="/products/{{this._id}}"><button
                       class="btn btn-info"
@@ -34,14 +38,14 @@
         </table>
         <div>
           {{#if response.hasPrevPage}}
-            <a
-              href="http://localhost:8080/products?page={{response.prevPage}}"
-            ><button class="btn btn-outline-dark">Prev</button></a>
+            <a href="{{response.prevLink}}"><button
+                class="btn btn-outline-dark"
+              >Prev</button></a>
           {{/if}}
           {{#if response.hasNextPage}}
-            <a
-              href="http://localhost:8080/products?page={{response.nextPage}}"
-            ><button class="btn btn-outline-dark">Next</button></a>
+            <a href="{{response.nextLink}}"><button
+                class="btn btn-outline-dark"
+              >Next</button></a>
           {{/if}}
         </div>
       </div>
