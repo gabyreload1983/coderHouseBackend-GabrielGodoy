@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { io } from "../../app.js";
 import Products from "../../dao/dbManagers/products.js";
-import mongoose from "mongoose";
+import productsPaginateValidator from "../../lib/validators/productsPaginateValidator.js";
+import idValidator from "../../lib/validators/idValidator.js";
+import postProductValidator from "../../lib/validators/postProductValidator.js";
+import existingProductValidator from "../../lib/validators/existingProductValidator.js";
 
 const productsManager = new Products();
 
@@ -9,42 +12,37 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    let { limit } = req.query;
+    let { limit = 10, page = 1, query = "", sort = "" } = req.query;
 
-    if (limit === undefined) {
-      const products = await productsManager.getAll();
-      return res.send({ status: "success", products });
-    }
+    productsPaginateValidator(limit, page, sort);
 
-    limit = Number(limit);
-    if (isNaN(limit) || limit <= 0)
-      return res.status(400).send({
-        status: "error",
-        message: "You must enter a number greater than 0",
-      });
+    if (query) query = JSON.parse(query);
 
-    const products = await productsManager.getLimit(limit);
-    res.send({ status: "success", products });
+    if (sort) sort = { price: sort };
+
+    const response = await productsManager.getPaginate(
+      limit,
+      page,
+      query,
+      sort
+    );
+
+    res.send(response);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
 router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    if (!mongoose.isValidObjectId(pid))
-      return res.status(404).send({ status: "error", message: "Invalid id!" });
-
-    const product = await productsManager.getProduct(pid);
-    if (product) return res.send({ status: "success", product });
-    res
-      .status(404)
-      .send({ status: "error", Error: "The product does not exist!!!" });
+    idValidator(pid);
+    const product = await existingProductValidator(productsManager, pid);
+    res.send({ status: "success", product });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -52,10 +50,7 @@ router.post("/", async (req, res) => {
   try {
     const product = req.body;
     const { title, description, code, price, stock, category } = product;
-    if (!title || !description || !code || !price || !stock || !category)
-      return res
-        .status(400)
-        .send({ status: "error", message: "You must enter all fields" });
+    postProductValidator(title, description, code, price, stock, category);
 
     const response = await productsManager.addProduct(product);
     if (!response)
@@ -69,19 +64,18 @@ router.post("/", async (req, res) => {
     res.send({ status: "success", message: "Product added", response });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
 router.put("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    if (!mongoose.isValidObjectId(pid))
-      return res.status(404).send({ status: "error", message: "Invalid id!" });
+    idValidator(pid);
+    const product = await existingProductValidator(productsManager, pid);
+    const newProduct = req.body;
 
-    const product = req.body;
-
-    const response = await productsManager.updateProduct(pid, product);
+    const response = await productsManager.updateProduct(pid, newProduct);
     return response?.modifiedCount
       ? res.send({ status: "success", message: "Product update" })
       : res.status(404).send({
@@ -90,15 +84,15 @@ router.put("/:pid", async (req, res) => {
         });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
 router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    if (!mongoose.isValidObjectId(pid))
-      return res.status(404).send({ status: "error", message: "Invalid id!" });
+    idValidator(pid);
+    const product = await existingProductValidator(productsManager, pid);
 
     const response = await productsManager.deleteProduct(pid);
     if (response?.deletedCount) {
@@ -112,7 +106,7 @@ router.delete("/:pid", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
