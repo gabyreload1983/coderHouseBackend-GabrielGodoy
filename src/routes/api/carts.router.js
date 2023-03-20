@@ -1,7 +1,7 @@
 import { Router } from "express";
-import mongoose from "mongoose";
 import Carts from "../../dao/dbManagers/carts.js";
 import Products from "../../dao/dbManagers/products.js";
+import idValidator from "../../lib/validators/idValidator.js";
 
 const cartsManager = new Carts();
 const productsManager = new Products();
@@ -26,35 +26,25 @@ router.post("/", async (req, res) => {
 router.get("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
-    if (!mongoose.isValidObjectId(cid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid cart id!" });
+    idValidator(cid);
 
     const cart = await cartsManager.getCart(cid);
     if (!cart)
       return res
         .status(404)
         .send({ status: "error", message: "That cart id does not exist" });
+
     res.send({ status: "success", cart });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(500).send({ status: "error", message: error.message });
   }
 });
 
 router.post("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
-    if (!mongoose.isValidObjectId(cid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid cart id!" });
-
-    if (!mongoose.isValidObjectId(pid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid product id!" });
+    idValidator(cid, pid);
 
     const cart = await cartsManager.getCart(cid);
     if (!cart)
@@ -84,19 +74,16 @@ router.post("/:cid/product/:pid", async (req, res) => {
     res.send({ status: "success", message: "Product added." });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(500).send({ status: "error", message: error.message });
   }
 });
 
-router.put("/:cid/", async (req, res) => {
+router.put("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
     const { newCart } = req.body;
 
-    if (!mongoose.isValidObjectId(cid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid cart id!" });
+    idValidator(cid);
 
     const cart = await cartsManager.getCart(cid);
     if (!cart)
@@ -111,7 +98,7 @@ router.put("/:cid/", async (req, res) => {
     res.status(400).send({ status: "error", message: "Error updating cart" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(500).send({ status: "error", message: error.message });
   }
 });
 
@@ -119,15 +106,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
-    if (!mongoose.isValidObjectId(cid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid cart id!" });
-
-    if (!mongoose.isValidObjectId(pid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid product id!" });
+    idValidator(cid, pid);
 
     const cart = await cartsManager.getCart(cid);
     if (!cart)
@@ -154,22 +133,14 @@ router.put("/:cid/product/:pid", async (req, res) => {
     res.status(400).send({ status: "error", message: "Error updating cart" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(500).send({ status: "error", message: error.message });
   }
 });
 
 router.delete("/:cid/products/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
-    if (!mongoose.isValidObjectId(cid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid cart id!" });
-
-    if (!mongoose.isValidObjectId(pid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid product id!" });
+    idValidator(cid, pid);
 
     const cart = await cartsManager.getCart(cid);
     if (!cart)
@@ -184,23 +155,21 @@ router.delete("/:cid/products/:pid", async (req, res) => {
         .send({ status: "error", message: "That product id does not exist" });
 
     const response = await cartsManager.deleteProduct(cid, pid);
-    res.send({
-      status: "success",
-      message: `Delete ${response.modifiedCount} product`,
-    });
+    if (response?.acknowledged && response?.modifiedCount)
+      return res.send({ status: "success", message: "Product was deleted." });
+    res
+      .status(400)
+      .send({ status: "error", message: "Error deleting product" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(500).send({ status: "error", message: error.message });
   }
 });
 
 router.delete("/:cid/", async (req, res) => {
   try {
     const { cid } = req.params;
-    if (!mongoose.isValidObjectId(cid))
-      return res
-        .status(404)
-        .send({ status: "error", message: "Invalid cart id!" });
+    idValidator(cid);
 
     const cart = await cartsManager.getCart(cid);
     if (!cart)
@@ -216,7 +185,7 @@ router.delete("/:cid/", async (req, res) => {
       });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error });
+    res.status(500).send({ status: "error", message: error.message });
   }
 });
 
