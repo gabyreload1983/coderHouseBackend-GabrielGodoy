@@ -1,7 +1,9 @@
 import { Router } from "express";
 import Carts from "../../dao/dbManagers/carts.js";
 import Products from "../../dao/dbManagers/products.js";
+import existingCartValidator from "../../lib/validators/existingCartValidator.js";
 import idValidator from "../../lib/validators/idValidator.js";
+import existingProductValidator from "../../lib/validators/existingProductValidator.js";
 
 const cartsManager = new Carts();
 const productsManager = new Products();
@@ -27,12 +29,7 @@ router.get("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
     idValidator(cid);
-
-    const cart = await cartsManager.getCart(cid);
-    if (!cart)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That cart id does not exist" });
+    const cart = await existingCartValidator(cartsManager, cid);
 
     res.send({ status: "success", cart });
   } catch (error) {
@@ -46,17 +43,8 @@ router.post("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     idValidator(cid, pid);
 
-    const cart = await cartsManager.getCart(cid);
-    if (!cart)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That cart id does not exist" });
-
-    const product = await productsManager.getProduct(pid);
-    if (!product)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That product id does not exist" });
+    const cart = await existingCartValidator(cartsManager, cid);
+    const product = await existingProductValidator(productsManager, pid);
 
     const index = cart.products.findIndex(
       (p) => p.product._id.toString() === pid
@@ -84,12 +72,7 @@ router.put("/:cid", async (req, res) => {
     const { newCart } = req.body;
 
     idValidator(cid);
-
-    const cart = await cartsManager.getCart(cid);
-    if (!cart)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That cart id does not exist" });
+    const cart = await existingCartValidator(cartsManager, cid);
 
     const response = await cartsManager.update(cid, newCart);
     if (response?.acknowledged)
@@ -107,18 +90,8 @@ router.put("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     idValidator(cid, pid);
-
-    const cart = await cartsManager.getCart(cid);
-    if (!cart)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That cart id does not exist" });
-
-    const product = await productsManager.getProduct(pid);
-    if (!product)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That product id does not exist" });
+    const cart = await existingCartValidator(cartsManager, cid);
+    const product = await existingProductValidator(productsManager, pid);
 
     const index = cart.products.findIndex(
       (p) => p.product._id.toString() === pid
@@ -141,18 +114,8 @@ router.delete("/:cid/products/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
     idValidator(cid, pid);
-
-    const cart = await cartsManager.getCart(cid);
-    if (!cart)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That cart id does not exist" });
-
-    const product = await productsManager.getProduct(pid);
-    if (!product)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That product id does not exist" });
+    const cart = await existingCartValidator(cartsManager, cid);
+    const product = await existingProductValidator(productsManager, pid);
 
     const response = await cartsManager.deleteProduct(cid, pid);
     if (response?.acknowledged && response?.modifiedCount)
@@ -170,12 +133,7 @@ router.delete("/:cid/", async (req, res) => {
   try {
     const { cid } = req.params;
     idValidator(cid);
-
-    const cart = await cartsManager.getCart(cid);
-    if (!cart)
-      return res
-        .status(404)
-        .send({ status: "error", message: "That cart id does not exist" });
+    const cart = await existingCartValidator(cartsManager, cid);
 
     const response = await cartsManager.deleteAllProducts(cid);
     if (response?.acknowledged)
