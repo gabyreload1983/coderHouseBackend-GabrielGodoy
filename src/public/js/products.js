@@ -1,4 +1,10 @@
 let cid = "";
+
+const cart = document.querySelector("#cart");
+cart.href = localStorage.getItem("cid")
+  ? `/carts/${localStorage.getItem("cid")}`
+  : "#";
+
 const createCart = async () => {
   const response = await fetch(`http://localhost:8080/api/carts/`, {
     method: "POST",
@@ -9,6 +15,7 @@ const createCart = async () => {
   const json = await response.json();
   cid = json.response._id;
   localStorage.setItem("cid", cid);
+  cart.href = `/carts/${localStorage.getItem("cid")}`;
 };
 
 localStorage.getItem("cid")

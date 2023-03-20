@@ -64,7 +64,12 @@ router.get("/products/:pid", async (req, res) => {
 
 router.get("/carts/:cid", async (req, res) => {
   const { cid } = req.params;
+
   const cart = await cartsManager.getCart(cid);
+  if (!cart)
+    return res
+      .status(404)
+      .send({ status: "error", message: "That cart id does not exist" });
   res.render("cart", cart);
 });
 
