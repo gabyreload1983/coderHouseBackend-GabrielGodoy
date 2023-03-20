@@ -1,6 +1,10 @@
 import { Router } from "express";
 import Products from "../../dao/dbManagers/products.js";
 import Carts from "../../dao/dbManagers/carts.js";
+import productsPaginateValidator from "../../lib/validators/productsPaginateValidator.js";
+import existingProductValidator from "../../lib/validators/existingProductValidator.js";
+import idValidator from "../../lib/validators/idValidator.js";
+import existingCartValidator from "../../lib/validators/existingCartValidator.js";
 
 const productsManager = new Products();
 const cartsManager = new Carts();
@@ -30,47 +34,48 @@ router.get("/chat", async (req, res) => {
 });
 
 router.get("/products/", async (req, res) => {
-  let { limit = 10, page = 1, query = "", sort = "" } = req.query;
+  try {
+    let { limit = 10, page = 1, query = "", sort = "" } = req.query;
 
-  limit = Number(limit);
-  page = Number(page);
-  if (isNaN(limit) || limit <= 0 || isNaN(page) || page <= 0)
-    return res.status(400).send({
-      status: "error",
-      message: "You must enter a number greater than 0",
-    });
+    productsPaginateValidator(limit, page, sort);
+    if (query) query = JSON.parse(query);
+    if (sort) sort = { price: sort };
 
-  if (query) query = JSON.parse(query);
-
-  if (sort) {
-    sort = Number(sort);
-    if (isNaN(sort) || (sort !== 1 && sort !== -1))
-      return res.status(400).send({
-        status: "error",
-        message:
-          "To sort the result, you must enter the number 1 (DES) or -1 (ASC)",
-      });
-    sort = { price: sort };
+    const response = await productsManager.getPaginate(
+      limit,
+      page,
+      query,
+      sort
+    );
+    res.render("products", { response });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ status: "error", message: error.message });
   }
-  const response = await productsManager.getPaginate(limit, page, query, sort);
-  res.render("products", { response });
 });
 
 router.get("/products/:pid", async (req, res) => {
-  const { pid } = req.params;
-  const product = await productsManager.getProduct(pid);
-  res.render("productDetail", product);
+  try {
+    const { pid } = req.params;
+    idValidator(pid);
+    const product = await existingProductValidator(productsManager, pid);
+    res.render("productDetail", product);
+  } catch (error) {
+    res.status(400).send({ status: "error", message: error.message });
+  }
 });
 
 router.get("/carts/:cid", async (req, res) => {
-  const { cid } = req.params;
+  try {
+    const { cid } = req.params;
+    idValidator(cid);
+    const cart = await existingCartValidator(cartsManager, cid);
 
-  const cart = await cartsManager.getCart(cid);
-  if (!cart)
-    return res
-      .status(404)
-      .send({ status: "error", message: "That cart id does not exist" });
-  res.render("cart", cart);
+    res.render("cart", cart);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ status: "error", message: error.message });
+  }
 });
 
 export default router;
