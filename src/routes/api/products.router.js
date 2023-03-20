@@ -4,6 +4,7 @@ import Products from "../../dao/dbManagers/products.js";
 import productsPaginateValidator from "../../lib/validators/productsPaginateValidator.js";
 import idValidator from "../../lib/validators/idValidator.js";
 import postProductValidator from "../../lib/validators/postProductValidator.js";
+import existingProductValidator from "../../lib/validators/existingProductValidator.js";
 
 const productsManager = new Products();
 
@@ -37,12 +38,8 @@ router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
     idValidator(pid);
-
-    const product = await productsManager.getProduct(pid);
-    if (product) return res.send({ status: "success", product });
-    res
-      .status(404)
-      .send({ status: "error", Error: "The product does not exist!!!" });
+    const product = await existingProductValidator(productsManager, pid);
+    res.send({ status: "success", product });
   } catch (error) {
     console.log(error);
     res.status(500).send({ status: "error", message: error.message });
@@ -75,10 +72,10 @@ router.put("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
     idValidator(pid);
+    const product = await existingProductValidator(productsManager, pid);
+    const newProduct = req.body;
 
-    const product = req.body;
-
-    const response = await productsManager.updateProduct(pid, product);
+    const response = await productsManager.updateProduct(pid, newProduct);
     return response?.modifiedCount
       ? res.send({ status: "success", message: "Product update" })
       : res.status(404).send({
@@ -95,6 +92,7 @@ router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
     idValidator(pid);
+    const product = await existingProductValidator(productsManager, pid);
 
     const response = await productsManager.deleteProduct(pid);
     if (response?.deletedCount) {
