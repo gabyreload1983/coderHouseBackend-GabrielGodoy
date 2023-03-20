@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
     res.send(response);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -42,7 +42,7 @@ router.get("/:pid", async (req, res) => {
     res.send({ status: "success", product });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -64,7 +64,7 @@ router.post("/", async (req, res) => {
     res.send({ status: "success", message: "Product added", response });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -84,7 +84,7 @@ router.put("/:pid", async (req, res) => {
         });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -106,7 +106,7 @@ router.delete("/:pid", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 

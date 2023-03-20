@@ -34,7 +34,7 @@ router.get("/:cid", async (req, res) => {
     res.send({ status: "success", cart });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -62,7 +62,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
     res.send({ status: "success", message: "Product added." });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -81,7 +81,7 @@ router.put("/:cid", async (req, res) => {
     res.status(400).send({ status: "error", message: "Error updating cart" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -106,7 +106,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
     res.status(400).send({ status: "error", message: "Error updating cart" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -125,7 +125,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
       .send({ status: "error", message: "Error deleting product" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
@@ -143,7 +143,7 @@ router.delete("/:cid/", async (req, res) => {
       });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: "error", message: error.message });
+    res.status(400).send({ status: "error", message: error.message });
   }
 });
 
