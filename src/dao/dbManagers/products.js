@@ -38,8 +38,6 @@ export default class Products {
       return response;
     } catch (error) {
       console.log(error);
-      response.status = "error";
-      return response;
     }
   };
 
