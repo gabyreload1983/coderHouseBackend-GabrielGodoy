@@ -1,10 +1,17 @@
 <div class="container">
 
-  <h1>Products</h1>
   <div class="row">
+    <div class="col-12 col-md-4">
+      <ul class="list-group my-3">
+        <li class="list-group-item active">Welcome {{user.name}}!!!</li>
+        <li class="list-group-item">Email: {{user.email}}</li>
+        <li class="list-group-item">Age: {{user.age}}</li>
+        <li class="list-group-item">Rol: {{user.rol}}</li>
+      </ul>
+    </div>
     <div class="col-12">
-      <h2>Lista de productos</h2>
-      <div id="container">
+      <h2>List of Products</h2>
+      <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
@@ -36,25 +43,23 @@
             {{/each}}
           </tbody>
         </table>
-        <div>
-          {{#if response.hasPrevPage}}
-            <a href="{{response.prevLink}}"><button
-                class="btn btn-outline-dark"
-              >Prev</button></a>
-          {{else}}
-            <button disabled class="btn btn-outline-dark">Prev</button>
-          {{/if}}
-          {{#if response.hasNextPage}}
-            <a href="{{response.nextLink}}"><button
-                class="btn btn-outline-dark"
-              >Next</button></a>
-          {{else}}
-            <button disabled class="btn btn-outline-dark">Next</button>
-          {{/if}}
-        </div>
+      </div>
+      <div class="text-center my-3">
+        {{#if response.hasPrevPage}}
+          <a href="{{response.prevLink}}"><button
+              class="btn btn-outline-dark me-3"
+            > << Prev</button></a>
+        {{else}}
+          <button disabled class="btn btn-outline-dark">Prev</button>
+        {{/if}}
+        {{#if response.hasNextPage}}
+          <a href="{{response.nextLink}}"><button
+              class="btn btn-outline-dark"
+            >Next >></button></a>
+        {{else}}
+          <button disabled class="btn btn-outline-dark">Next</button>
+        {{/if}}
       </div>
     </div>
   </div>
-
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
