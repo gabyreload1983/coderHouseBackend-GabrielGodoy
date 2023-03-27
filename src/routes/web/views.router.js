@@ -11,29 +11,33 @@ const cartsManager = new Carts();
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+const publicAccess = (req, res, next) => {
+  if (req.session.user) return res.redirect("/products");
+  next();
+};
+const privateAccess = (req, res, next) => {
+  if (!req.session.user) return res.redirect("/login");
+  next();
+};
+
+router.get("/", publicAccess, async (req, res) => {
+  res.redirect("/login");
+});
+
+router.get("/realtimeproducts", privateAccess, async (req, res) => {
   try {
     const products = await productsManager.getAll();
-    res.render("home", { products });
+    res.render("realTimeProducts", { products, user: req.session.user });
   } catch (error) {
     console.log(error);
   }
 });
 
-router.get("/realtimeproducts", async (req, res) => {
-  try {
-    const products = await productsManager.getAll();
-    res.render("realTimeProducts", { products });
-  } catch (error) {
-    console.log(error);
-  }
+router.get("/chat", privateAccess, async (req, res) => {
+  res.render("chat", { user: req.session.user });
 });
 
-router.get("/chat", async (req, res) => {
-  res.render("chat");
-});
-
-router.get("/products/", async (req, res) => {
+router.get("/products/", privateAccess, async (req, res) => {
   try {
     let { limit = 10, page = 1, query = "", sort = "" } = req.query;
 
@@ -47,35 +51,51 @@ router.get("/products/", async (req, res) => {
       query,
       sort
     );
-    res.render("products", { response });
+
+    res.render("products", { response, user: req.session.user });
   } catch (error) {
     console.log(error);
     res.status(400).send({ status: "error", message: error.message });
   }
 });
 
-router.get("/products/:pid", async (req, res) => {
+router.get("/products/:pid", privateAccess, async (req, res) => {
   try {
     const { pid } = req.params;
     idValidator(pid);
     const product = await existingProductValidator(productsManager, pid);
+    product.user = req.session.user;
     res.render("productDetail", product);
   } catch (error) {
     res.status(400).send({ status: "error", message: error.message });
   }
 });
 
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", privateAccess, async (req, res) => {
   try {
     const { cid } = req.params;
     idValidator(cid);
     const cart = await existingCartValidator(cartsManager, cid);
 
-    res.render("cart", cart);
+    res.render("cart", { ...cart, user: req.session.user });
   } catch (error) {
     console.log(error);
     res.status(400).send({ status: "error", message: error.message });
   }
+});
+
+router.get("/register", publicAccess, (req, res) => {
+  res.render("register");
+});
+
+router.get("/login", publicAccess, (req, res) => {
+  res.render("login");
+});
+
+router.get("/profile", privateAccess, (req, res) => {
+  res.render("profile", {
+    user: req.session.user,
+  });
 });
 
 export default router;

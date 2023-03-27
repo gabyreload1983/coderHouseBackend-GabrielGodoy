@@ -1,11 +1,14 @@
 import express from "express";
+import mongoose from "mongoose";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
 import viewsRouter from "./routes/web/views.router.js";
 import productsRouter from "./routes/api/products.router.js";
 import cartsRouter from "./routes/api/carts.router.js";
-import { mongoose } from "mongoose";
+import sessionsRouter from "./routes/api/sessions.router.js";
 
 import Messages from "./dao/dbManagers/messages.js";
 const messagesManager = new Messages();
@@ -21,18 +24,33 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
-app.use("/", viewsRouter);
+const URI =
+  "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority";
 
 try {
-  await mongoose.connect(
-    "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority"
-  );
+  await mongoose.connect(URI);
   console.log("Connected to Atlas mongoDB");
 } catch (error) {
   console.log(error);
 }
+
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: URI,
+      mongoOptions: { useNewUrlParser: true },
+      ttl: 3600,
+    }),
+    secret: "secretCoder",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+app.use("/api/sessions", sessionsRouter);
+app.use("/", viewsRouter);
 
 const server = app.listen(8080, () => console.log("Listening on port 8080"));
 const io = new Server(server);

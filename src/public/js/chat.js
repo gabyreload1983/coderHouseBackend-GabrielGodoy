@@ -13,6 +13,7 @@ Swal.fire({
   inputValidator: (value) =>
     !value && "Necesitas escribir un nombre de usuario",
   allowOutsideClick: false,
+  allowEscapeKey: false,
 }).then((result) => {
   user = result.value;
   userName.innerHTML = user;
