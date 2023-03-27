@@ -1,6 +1,6 @@
 import { cartModel } from "../models/carts.js";
 
-export default class Products {
+export default class Carts {
   constructor() {
     console.log("Working carts with DB in mongoDB");
   }

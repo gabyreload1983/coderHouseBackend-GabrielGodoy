@@ -1,5 +1,8 @@
 import { Router } from "express";
 import userModel from "../../dao/models/users.model.js";
+import Carts from "../../dao/dbManagers/carts.js";
+
+const cartsManager = new Carts();
 
 const router = Router();
 
@@ -45,11 +48,14 @@ router.post("/login", async (req, res) => {
         .status(400)
         .send({ status: "error", error: "incorrect credentials" });
 
+    const cart = await cartsManager.createCart();
+
     req.session.user = {
       name: `${user.first_name} ${user.last_name}`,
       email: user.email,
       age: user.age,
       rol,
+      cartId: cart._id.toString(),
     };
 
     res.send({ status: "success", message: "login success" });

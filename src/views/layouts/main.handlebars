@@ -38,10 +38,15 @@
             <li class="nav-item">
               <a class="nav-link" href="/products">Products</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#" id="cart">Cart</a>
-            </li>
-
+            {{#if user}}
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="/carts/{{user.cartId}}"
+                  id="cart"
+                >Cart</a>
+              </li>
+            {{/if}}
             <li class="nav-item">
               <a class="nav-link" href="/profile">Profile</a>
             </li>
