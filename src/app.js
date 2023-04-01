@@ -9,6 +9,8 @@ import viewsRouter from "./routes/web/views.router.js";
 import productsRouter from "./routes/api/products.router.js";
 import cartsRouter from "./routes/api/carts.router.js";
 import sessionsRouter from "./routes/api/sessions.router.js";
+import initializePassport from "./config/passport.config.js";
+import passport from "passport";
 
 import Messages from "./dao/dbManagers/messages.js";
 const messagesManager = new Messages();
@@ -25,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const URI =
-  "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority";
+  "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce_test?retryWrites=true&w=majority";
 
 try {
   await mongoose.connect(URI);
@@ -46,6 +48,10 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
