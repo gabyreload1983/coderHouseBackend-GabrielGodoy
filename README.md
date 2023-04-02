@@ -2,4 +2,4 @@
 
 ## PROGRAMACION BACKEND - Comisión 44985
 
-## Login
+## Login - Estrategia de autenticacion
