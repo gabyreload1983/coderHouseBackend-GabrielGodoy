@@ -13,6 +13,8 @@ export const createHash = (password) =>
 export const isValidPassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
 
+export const isAdmin = (email) => (email.startsWith("admin") ? true : false);
+
 const generateId = (array) => {
   return array.length === 0 ? 1 : array[array.length - 1]._id + 1;
 };

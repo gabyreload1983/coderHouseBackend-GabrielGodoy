@@ -70,7 +70,16 @@ router.get(
   "/github-callback",
   passport.authenticate("github", { failureRedirect: "/login" }),
   async (req, res) => {
-    req.session.user = req.user;
+    const cart = await cartsManager.createCart();
+
+    req.session.user = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+      rol: "user",
+      cartId: cart._id.toString(),
+    };
 
     res.redirect("/products");
   }

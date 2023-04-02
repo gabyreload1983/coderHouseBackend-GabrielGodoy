@@ -2,7 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
 import userModel from "../dao/models/users.model.js";
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash, isAdmin, isValidPassword } from "../utils.js";
 
 const LocalStrategy = local.Strategy;
 
@@ -50,7 +50,7 @@ const initializePassport = () => {
       },
       async (username, password, done) => {
         let rol = "user";
-        if (username.startsWith("admin")) {
+        if (isAdmin(username)) {
           username = username.slice(5);
           rol = "admin";
         }
@@ -84,7 +84,6 @@ const initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log(profile);
           const user = await userModel.findOne({ email: profile._json.email });
           if (!user) {
             const newUser = {
