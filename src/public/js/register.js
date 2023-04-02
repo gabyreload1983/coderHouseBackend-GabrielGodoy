@@ -36,7 +36,7 @@ form.addEventListener("submit", (e) => {
           showConfirmButton: false,
           timer: 3000,
           title: `Error`,
-          text: `${json?.error}`,
+          text: `${json?.message}`,
           icon: "error",
         });
       }

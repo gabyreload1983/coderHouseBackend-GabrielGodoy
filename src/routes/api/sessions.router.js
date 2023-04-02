@@ -1,68 +1,50 @@
 import { Router } from "express";
 import userModel from "../../dao/models/users.model.js";
 import Carts from "../../dao/dbManagers/carts.js";
+import passport from "passport";
 
 const cartsManager = new Carts();
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body;
-  try {
-    const exists = await userModel.findOne({ email });
-    if (exists)
-      return res
-        .status(400)
-        .send({ status: "error", error: "User already exists" });
-
-    const user = {
-      first_name,
-      last_name,
-      email,
-      age,
-      password,
-    };
-
-    await userModel.create(user);
-
-    res.send({ status: "success", message: "User registered" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ status: "error", error });
+router.post(
+  "/register",
+  passport.authenticate("register", { failureRedirect: "fail-register" }),
+  async (req, res) => {
+    res.send({ status: "success", message: "user registered" });
   }
+);
+
+router.get("/fail-register", async (req, res) => {
+  res.send({ status: "error", message: "register failed" });
 });
 
-router.post("/login", async (req, res) => {
-  let { email, password } = req.body;
-
-  let rol = "user";
-  if (email.startsWith("admin")) {
-    email = email.slice(5);
-    rol = "admin";
-  }
-
-  try {
-    const user = await userModel.findOne({ email, password });
-    if (!user)
+router.post(
+  "/login",
+  passport.authenticate("login", { failureRedirect: "fail-login" }),
+  async (req, res) => {
+    if (!req.user)
       return res
         .status(400)
-        .send({ status: "error", error: "incorrect credentials" });
+        .send({ status: "error", message: "Invalid credentials" });
 
     const cart = await cartsManager.createCart();
 
     req.session.user = {
-      name: `${user.first_name} ${user.last_name}`,
-      email: user.email,
-      age: user.age,
-      rol,
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+      rol: req.user.rol,
       cartId: cart._id.toString(),
     };
 
     res.send({ status: "success", message: "login success" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ status: "error", error });
   }
+);
+
+router.get("/fail-login", async (req, res) => {
+  res.send({ status: "error", message: "login failed" });
 });
 
 router.get("/logout", (req, res) => {
@@ -75,5 +57,32 @@ router.get("/logout", (req, res) => {
     res.redirect("/login");
   });
 });
+
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] }),
+  async (req, res) => {
+    res.send({ status: "sucess", message: "user registered" });
+  }
+);
+
+router.get(
+  "/github-callback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  async (req, res) => {
+    const cart = await cartsManager.createCart();
+
+    req.session.user = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+      rol: "user",
+      cartId: cart._id.toString(),
+    };
+
+    res.redirect("/products");
+  }
+);
 
 export default router;

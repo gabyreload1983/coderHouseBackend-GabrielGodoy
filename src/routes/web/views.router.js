@@ -64,8 +64,8 @@ router.get("/products/:pid", privateAccess, async (req, res) => {
     const { pid } = req.params;
     idValidator(pid);
     const product = await existingProductValidator(productsManager, pid);
-    product.user = req.session.user;
-    res.render("productDetail", product);
+
+    res.render("productDetail", { ...product._doc, user: req.session.user });
   } catch (error) {
     res.status(400).send({ status: "error", message: error.message });
   }
