@@ -3,10 +3,10 @@
   <div class="row">
     <div class="col-12 col-md-4">
       <ul class="list-group my-3">
-        <li class="list-group-item active">Welcome {{user.name}}!!!</li>
+        <li class="list-group-item active">Welcome {{user.first_name}}!!!</li>
         <li class="list-group-item">Email: {{user.email}}</li>
         <li class="list-group-item">Age: {{user.age}}</li>
-        <li class="list-group-item">Rol: {{user.rol}}</li>
+        <li class="list-group-item">Rol: {{user.role}}</li>
       </ul>
     </div>
     <div class="col-12">
@@ -36,7 +36,7 @@
                 <td>
                   <button
                     class="btn btn-success"
-                    onclick="addToCart('{{../user.cartId}}','{{this._id}}')"
+                    onclick="addToCart('{{../user.cart}}','{{this._id}}')"
                   >Agregar a carrito</button>
                 </td>
               </tr>
