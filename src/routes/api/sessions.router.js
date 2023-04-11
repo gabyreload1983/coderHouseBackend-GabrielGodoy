@@ -1,10 +1,11 @@
 import { Router } from "express";
-import userModel from "../../dao/models/users.model.js";
+import User from "../../dao/dbManagers/users.js";
 import Carts from "../../dao/dbManagers/carts.js";
 import passport from "passport";
 import { createHash, generateToken, validatePassword } from "../../utils.js";
 
 const cartsManager = new Carts();
+const userManager = new User();
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.post("/register", async (req, res) => {
       role = "user",
       password,
     } = req.body;
-    const user = await userModel.findOne({ email });
+    const user = await userManager.findByEmail(email);
 
     if (user) {
       return res
@@ -35,7 +36,7 @@ router.post("/register", async (req, res) => {
       role,
     };
 
-    await userModel.create(newUser);
+    await userManager.add(newUser);
     res.send({ status: "success", message: "user registered" });
   } catch (error) {
     return res
@@ -47,7 +48,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
+    const user = await userManager.findByEmail(email);
 
     if (!user) {
       return res
@@ -63,7 +64,7 @@ router.post("/login", async (req, res) => {
     if (!user.cart) {
       const cart = await cartsManager.createCart();
       user.cart = cart._id.toString();
-      await userModel.updateOne({ email }, user);
+      await userManager.update(email, user);
       console.log("cart created");
     }
     user.password = "";
@@ -106,7 +107,7 @@ router.get(
     if (!req.user.cart) {
       const cart = await cartsManager.createCart();
       req.user.cart = cart._id.toString();
-      await userModel.updateOne({ email: req.user.email }, req.user);
+      await userManager.update(req.user.email, req.user);
       console.log("cart created");
     }
 
