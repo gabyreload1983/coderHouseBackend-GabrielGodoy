@@ -19,6 +19,9 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
+          if (!jwt_payload.user)
+            return done(null, false, { messages: "Invalid credentials!" });
+
           return done(null, jwt_payload.user);
         } catch (error) {
           return done(error);

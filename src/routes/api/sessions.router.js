@@ -2,7 +2,12 @@ import { Router } from "express";
 import User from "../../dao/dbManagers/users.js";
 import Carts from "../../dao/dbManagers/carts.js";
 import passport from "passport";
-import { createHash, generateToken, validatePassword } from "../../utils.js";
+import {
+  createHash,
+  generateToken,
+  passportCall,
+  validatePassword,
+} from "../../utils.js";
 
 const cartsManager = new Carts();
 const userManager = new User();
@@ -121,5 +126,9 @@ router.get(
       .redirect("/products");
   }
 );
+
+router.get("/current", passportCall("jwt"), async (req, res) => {
+  res.send({ user: req.user });
+});
 
 export default router;
