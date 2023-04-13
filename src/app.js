@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const URI =
-  "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce_test?retryWrites=true&w=majority";
+  "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority";
 
 try {
   await mongoose.connect(URI);
