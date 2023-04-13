@@ -1,74 +1,30 @@
 import passport from "passport";
-import local from "passport-local";
 import GitHubStrategy from "passport-github2";
-import userModel from "../dao/models/users.model.js";
-import { createHash, isAdmin, isValidPassword } from "../utils.js";
+import jwt from "passport-jwt";
+import Users from "../dao/dbManagers/users.js";
+import { PRIVATE_KEY } from "../utils.js";
 
-const LocalStrategy = local.Strategy;
+const userManager = new Users();
+
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 
 const initializePassport = () => {
   passport.use(
-    "register",
-    new LocalStrategy(
+    "jwt",
+    new JWTStrategy(
       {
-        passReqToCallback: true,
-        usernameField: "email",
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: PRIVATE_KEY,
       },
-      async (req, username, password, done) => {
-        const { first_name, last_name, email, age } = req.body;
-
+      async (jwt_payload, done) => {
         try {
-          const user = await userModel.findOne({ email: username });
+          if (!jwt_payload.user)
+            return done(null, false, { messages: "Invalid credentials!" });
 
-          if (user) {
-            console.log("User already exists");
-            return done(null, false);
-          }
-
-          const newUser = {
-            first_name,
-            last_name,
-            email,
-            age,
-            password: createHash(password),
-          };
-
-          const result = await userModel.create(newUser);
-          return done(null, result);
+          return done(null, jwt_payload.user);
         } catch (error) {
-          return done(`Error registering user. ${error}`);
-        }
-      }
-    )
-  );
-
-  passport.use(
-    "login",
-    new LocalStrategy(
-      {
-        usernameField: "email",
-      },
-      async (username, password, done) => {
-        let rol = "user";
-        if (isAdmin(username)) {
-          username = username.slice(5);
-          rol = "admin";
-        }
-
-        try {
-          const user = await userModel.findOne({ email: username });
-
-          if (!user) {
-            return done(null, false);
-          }
-
-          if (!isValidPassword(user, password)) return done(null, false);
-
-          user.rol = rol;
-
-          return done(null, user);
-        } catch (error) {
-          return done(`User login error. ${error}`);
+          return done(error);
         }
       }
     )
@@ -84,17 +40,18 @@ const initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const user = await userModel.findOne({ email: profile._json.email });
+          const user = await userManager.findByEmail(profile._json.email);
           if (!user) {
             const newUser = {
               first_name: profile._json.name,
               last_name: "",
-              age: 18,
               email: profile._json.email,
+              age: "",
+              cart: "",
               password: "",
             };
 
-            const result = await userModel.create(newUser);
+            const result = await userManager.add(newUser);
 
             done(null, result);
           } else {
@@ -112,9 +69,17 @@ const initializePassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    const user = await userModel.findById(id);
+    const user = await userManager.findById(id);
     done(null, user);
   });
+};
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies["coderCookieToken"];
+  }
+  return token;
 };
 
 export default initializePassport;

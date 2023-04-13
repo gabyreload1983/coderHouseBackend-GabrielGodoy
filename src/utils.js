@@ -2,19 +2,42 @@ import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import fs from "fs";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import passport from "passport";
 
 const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = dirname(__filename);
 
+export const PRIVATE_KEY = "CoderSecret";
+
+export const generateToken = (user) =>
+  jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "24h" });
+
+export const passportCall = (strategy) => {
+  return async (req, res, next) => {
+    passport.authenticate(strategy, function (err, user, info) {
+      if (err) return next(err);
+
+      if (!user) {
+        return res
+          .status(401)
+          .send({ error: info.messages ? info.messages : info.toString() });
+      }
+
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
+};
+
 export const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-export const isValidPassword = (user, password) =>
+export const validatePassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
 
-export const isAdmin = (email) => (email.startsWith("admin") ? true : false);
-
+// fileSystem
 const generateId = (array) => {
   return array.length === 0 ? 1 : array[array.length - 1]._id + 1;
 };

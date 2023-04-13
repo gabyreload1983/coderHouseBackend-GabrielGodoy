@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import session from "express-session";
-import MongoStore from "connect-mongo";
+import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
@@ -25,6 +24,7 @@ app.set("view engine", "handlebars");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const URI =
   "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority";
@@ -36,22 +36,8 @@ try {
   console.log(error);
 }
 
-app.use(
-  session({
-    store: MongoStore.create({
-      mongoUrl: URI,
-      mongoOptions: { useNewUrlParser: true },
-      ttl: 3600,
-    }),
-    secret: "secretCoder",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);

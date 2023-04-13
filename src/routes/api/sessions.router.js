@@ -1,66 +1,102 @@
 import { Router } from "express";
-import userModel from "../../dao/models/users.model.js";
+import User from "../../dao/dbManagers/users.js";
 import Carts from "../../dao/dbManagers/carts.js";
 import passport from "passport";
+import {
+  createHash,
+  generateToken,
+  passportCall,
+  validatePassword,
+} from "../../utils.js";
 
 const cartsManager = new Carts();
+const userManager = new User();
 
 const router = Router();
 
-router.post(
-  "/register",
-  passport.authenticate("register", { failureRedirect: "fail-register" }),
-  async (req, res) => {
-    res.send({ status: "success", message: "user registered" });
-  }
-);
+router.post("/register", async (req, res) => {
+  try {
+    const {
+      first_name,
+      last_name,
+      email,
+      age,
+      role = "user",
+      password,
+    } = req.body;
+    const user = await userManager.findByEmail(email);
 
-router.get("/fail-register", async (req, res) => {
-  res.send({ status: "error", message: "register failed" });
-});
-
-router.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "fail-login" }),
-  async (req, res) => {
-    if (!req.user)
+    if (user) {
       return res
         .status(400)
-        .send({ status: "error", message: "Invalid credentials" });
+        .send({ status: "error", message: "User already exists" });
+    }
 
-    const cart = await cartsManager.createCart();
-
-    req.session.user = {
-      first_name: req.user.first_name,
-      last_name: req.user.last_name,
-      age: req.user.age,
-      email: req.user.email,
-      rol: req.user.rol,
-      cartId: cart._id.toString(),
+    const newUser = {
+      first_name,
+      last_name,
+      email,
+      age,
+      password: createHash(password),
+      role,
     };
 
-    res.send({ status: "success", message: "login success" });
+    await userManager.add(newUser);
+    res.send({ status: "success", message: "user registered" });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ status: "error", message: `Error registering user. ${error}` });
   }
-);
+});
 
-router.get("/fail-login", async (req, res) => {
-  res.send({ status: "error", message: "login failed" });
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userManager.findByEmail(email);
+
+    if (!user) {
+      return res
+        .status(401)
+        .send({ status: "error", message: "Invalid credentials" });
+    }
+
+    if (!validatePassword(user, password))
+      return res
+        .status(401)
+        .send({ status: "error", message: "Invalid credentials" });
+
+    if (!user.cart) {
+      const cart = await cartsManager.createCart();
+      user.cart = cart._id.toString();
+      await userManager.update(email, user);
+      console.log("cart created");
+    }
+    user.password = "";
+
+    const accessToken = generateToken(user);
+
+    res
+      .cookie("coderCookieToken", accessToken, {
+        maxAge: 60 * 60 * 24 * 7,
+        httpOnly: true,
+      })
+      .send({ status: "success", message: "login success" });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ status: "error", message: `Error login user. ${error}` });
+  }
 });
 
 router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err)
-      return res
-        .status(500)
-        .send({ status: "error", error: "No se pudo hacer lougout" });
-
-    res.redirect("/login");
-  });
+  res.clearCookie("coderCookieToken");
+  res.redirect("/login");
 });
 
 router.get(
   "/github",
-  passport.authenticate("github", { scope: ["user:email"] }),
+  passport.authenticate("github", { session: false, scope: ["user:email"] }),
   async (req, res) => {
     res.send({ status: "sucess", message: "user registered" });
   }
@@ -68,21 +104,31 @@ router.get(
 
 router.get(
   "/github-callback",
-  passport.authenticate("github", { failureRedirect: "/login" }),
+  passport.authenticate("github", {
+    session: false,
+    failureRedirect: "/login",
+  }),
   async (req, res) => {
-    const cart = await cartsManager.createCart();
+    if (!req.user.cart) {
+      const cart = await cartsManager.createCart();
+      req.user.cart = cart._id.toString();
+      await userManager.update(req.user.email, req.user);
+      console.log("cart created");
+    }
 
-    req.session.user = {
-      first_name: req.user.first_name,
-      last_name: req.user.last_name,
-      age: req.user.age,
-      email: req.user.email,
-      rol: "user",
-      cartId: cart._id.toString(),
-    };
+    const accessToken = generateToken(req.user);
 
-    res.redirect("/products");
+    res
+      .cookie("coderCookieToken", accessToken, {
+        maxAge: 60 * 60 * 24 * 7,
+        httpOnly: true,
+      })
+      .redirect("/products");
   }
 );
+
+router.get("/current", passportCall("jwt"), async (req, res) => {
+  res.send({ user: req.user });
+});
 
 export default router;
