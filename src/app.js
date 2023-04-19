@@ -1,5 +1,6 @@
 import express from "express";
-import mongoose from "mongoose";
+import "./dao/dbConfig.js";
+
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
@@ -25,16 +26,6 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-const URI =
-  "mongodb+srv://gabriel:Coder2023@coderhouse.gszwtre.mongodb.net/ecommerce?retryWrites=true&w=majority";
-
-try {
-  await mongoose.connect(URI);
-  console.log("Connected to Atlas mongoDB");
-} catch (error) {
-  console.log(error);
-}
 
 initializePassport();
 app.use(passport.initialize());
