@@ -32,6 +32,8 @@ const getProductsPaginate = async (limit, page, query, sort) => {
   return response;
 };
 
+const getAll = async () => await productsManager.getAll();
+
 const getProduct = async (pid) => await productsManager.getProduct(pid);
 
 const addProduct = async (product) => {
@@ -64,6 +66,7 @@ const deleteProduct = async (pid) => {
 
 export {
   getProductsPaginate,
+  getAll,
   getProduct,
   addProduct,
   updateProduct,
