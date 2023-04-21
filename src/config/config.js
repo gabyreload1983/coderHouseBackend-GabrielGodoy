@@ -4,4 +4,5 @@ dotenv.config();
 
 export default {
   mongoUrl: process.env.MONGO_URL,
+  private_key: process.env.PRIVATE_KEY,
 };

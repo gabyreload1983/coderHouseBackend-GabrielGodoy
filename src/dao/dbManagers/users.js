@@ -5,7 +5,7 @@ export default class Users {
     console.log("Working users with DB in mongoDB");
   }
 
-  add = async (user) => await userModel.create(user);
+  create = async (user) => await userModel.create(user);
 
   findById = async (uid) => await userModel.findOne({ _id: uid });
 
