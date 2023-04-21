@@ -1,14 +1,12 @@
 import { Router } from "express";
-import Products from "../../dao/dbManagers/products.js";
-import Carts from "../../dao/dbManagers/carts.js";
-import productsPaginateValidator from "../../lib/validators/productsPaginateValidator.js";
-import existingProductValidator from "../../lib/validators/existingProductValidator.js";
-import idValidator from "../../lib/validators/idValidator.js";
-import existingCartValidator from "../../lib/validators/existingCartValidator.js";
 import passport from "passport";
-
-const productsManager = new Products();
-const cartsManager = new Carts();
+import {
+  getAll as getAllService,
+  getProduct as getProductService,
+  getProductsPaginate as getProductsPaginateService,
+} from "../../services/products.service.js";
+import { isInvalidId } from "../../lib/validators/validator.js";
+import { getCart } from "../../services/carts.service.js";
 
 const router = Router();
 
@@ -25,10 +23,11 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const products = await productsManager.getAll();
+      const products = await getAllService();
       res.render("realTimeProducts", { products, user: req.user });
     } catch (error) {
       console.log(error);
+      res.status(500).send(error);
     }
   }
 );
@@ -48,11 +47,7 @@ router.get(
     try {
       let { limit = 10, page = 1, query = "", sort = "" } = req.query;
 
-      productsPaginateValidator(limit, page, sort);
-      if (query) query = JSON.parse(query);
-      if (sort) sort = { price: sort };
-
-      const response = await productsManager.getPaginate(
+      const response = await getProductsPaginateService(
         limit,
         page,
         query,
@@ -62,7 +57,7 @@ router.get(
       res.render("products", { response, user: req.user });
     } catch (error) {
       console.log(error);
-      res.status(400).send({ status: "error", message: error.message });
+      res.status(500).send(error);
     }
   }
 );
@@ -73,12 +68,19 @@ router.get(
   async (req, res) => {
     try {
       const { pid } = req.params;
-      idValidator(pid);
-      const product = await existingProductValidator(productsManager, pid);
+      if (isInvalidId(pid))
+        return res.status(400).send({ status: "error", message: "Invalid id" });
+
+      const product = await getProductService(pid);
+      if (!product)
+        return res
+          .status(404)
+          .send({ error: "error", message: "Product not found" });
 
       res.render("productDetail", { ...product._doc, user: req.user });
     } catch (error) {
-      res.status(400).send({ status: "error", message: error.message });
+      console.log(error);
+      res.status(500).send(error);
     }
   }
 );
@@ -89,13 +91,19 @@ router.get(
   async (req, res) => {
     try {
       const { cid } = req.params;
-      idValidator(cid);
-      const cart = await existingCartValidator(cartsManager, cid);
+      if (isInvalidId(cid))
+        return res.status(400).send({ status: "error", message: "Invalid id" });
+
+      const cart = await getCart(cid);
+      if (!cart)
+        return res
+          .status(404)
+          .send({ status: "error", message: "Cart id not found" });
 
       res.render("cart", { ...cart, user: req.user });
     } catch (error) {
       console.log(error);
-      res.status(400).send({ status: "error", message: error.message });
+      res.status(500).send(error);
     }
   }
 );
