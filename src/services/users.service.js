@@ -33,7 +33,6 @@ const login = async (email, password) => {
     const cart = await cartsManager.createCart();
     user.cart = cart._id.toString();
     await userManager.update(email, user);
-    console.log("cart created");
   }
   user.password = "";
 
