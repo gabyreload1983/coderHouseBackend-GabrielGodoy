@@ -1,5 +1,5 @@
 import express from "express";
-import "./dao/dbConfig.js";
+import "./dao/dbManagers/dbConfig.js";
 
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
