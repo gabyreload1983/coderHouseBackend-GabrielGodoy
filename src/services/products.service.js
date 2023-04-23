@@ -49,7 +49,7 @@ const addProduct = async (product) => {
 
 const updateProduct = async (pid, product) => {
   const response = await productsManager.updateProduct(pid, product);
-  if (response?.modifiedCount === 0)
+  if (response?.matchedCount === 0)
     return { status: "error", message: "Product id not found" };
   return response;
 };
