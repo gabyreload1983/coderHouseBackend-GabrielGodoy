@@ -2,6 +2,8 @@ import { Router } from "express";
 import passport from "passport";
 import { passportCall } from "../../utils.js";
 import {
+  current,
+  github,
   githubCallback,
   login,
   logout,
@@ -19,9 +21,7 @@ router.get("/logout", logout);
 router.get(
   "/github",
   passport.authenticate("github", { session: false, scope: ["user:email"] }),
-  async (req, res) => {
-    res.send({ status: "sucess", message: "user registered" });
-  }
+  github
 );
 
 router.get(
@@ -33,8 +33,6 @@ router.get(
   githubCallback
 );
 
-router.get("/current", passportCall("jwt"), async (req, res) => {
-  res.send({ user: req.user });
-});
+router.get("/current", passportCall("jwt"), current);
 
 export default router;

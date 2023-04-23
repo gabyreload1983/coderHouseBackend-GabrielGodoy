@@ -71,6 +71,10 @@ const logout = (req, res) => {
   res.redirect("/login");
 };
 
+const github = async (req, res) => {
+  res.send({ status: "sucess", message: "user registered" });
+};
+
 const githubCallback = async (req, res) => {
   try {
     const accessToken = await githubCallbackService(req.user);
@@ -87,4 +91,8 @@ const githubCallback = async (req, res) => {
   }
 };
 
-export { register, login, logout, githubCallback };
+const current = async (req, res) => {
+  res.send({ user: req.user });
+};
+
+export { register, login, logout, github, githubCallback, current };

@@ -44,8 +44,7 @@ const githubCallback = async (user) => {
   if (!user.cart) {
     const cart = await cartsManager.createCart();
     user.cart = cart._id.toString();
-    await userManager.update(user.email, req.user);
-    console.log("cart created");
+    await userManager.update(user.email, user);
   }
 
   return generateToken(user);
