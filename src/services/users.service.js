@@ -1,5 +1,6 @@
 import Carts from "../dao/dbManagers/carts.js";
 import Users from "../dao/dbManagers/users.js";
+import { isAdmin } from "../lib/validators/validator.js";
 import { createHash, generateToken, validatePassword } from "../utils.js";
 
 const cartsManager = new Carts();
@@ -34,6 +35,11 @@ const login = async (email, password) => {
     user.cart = cart._id.toString();
     await userManager.update(email, user);
   }
+
+  if (isAdmin(email, password)) {
+    user.role = "admin";
+  }
+
   user.password = "";
 
   return generateToken(user);
