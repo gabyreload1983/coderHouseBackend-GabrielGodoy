@@ -30,12 +30,8 @@ const updateQuantity = async (cart, product, quantity) => {
 const deleteProduct = async (cart, product) =>
   await cartsManager.deleteProduct(cart._id, product._id);
 
-const deleteAllProducts = async (cid) => {
-  const cart = await cartsManager.getCart(cid);
-  if (!cart) return { status: "error", message: "Cart id not found" };
-
-  return await cartsManager.deleteAllProducts(cid);
-};
+const deleteAllProducts = async (cart) =>
+  await cartsManager.deleteAllProducts(cart._id);
 
 export {
   createCart,

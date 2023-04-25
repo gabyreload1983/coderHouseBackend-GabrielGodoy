@@ -157,15 +157,18 @@ const deleteAllProducts = async (req, res) => {
     if (isInvalidId(cid))
       return res.status(400).send({ status: "error", message: "Invalid id" });
 
-    const response = await deleteAllProductsService(cid);
-    if (response?.status === "error")
+    const cart = await getCartService(cid);
+    if (!cart)
       return res
         .status(404)
-        .send({ status: "error", message: response.message });
+        .send({ status: "error", message: "cart not found" });
+
+    const response = await deleteAllProductsService(cart);
 
     res.send({
       status: "success",
       message: `All products was deleted from cart`,
+      response,
     });
   } catch (error) {
     console.log(error);
