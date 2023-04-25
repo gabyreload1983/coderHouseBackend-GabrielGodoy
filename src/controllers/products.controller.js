@@ -5,6 +5,7 @@ import {
   addProduct as addProductService,
   getProduct as getProductService,
   getProductsPaginate as getProductsPaginateService,
+  getProductByCode as getProductByCodeService,
 } from "../services/products.service.js";
 
 const getProductsPaginate = async (req, res) => {
@@ -41,17 +42,22 @@ const getProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const product = req.body;
-    const { title, description, code, price, stock, category } = product;
+    const newProduct = req.body;
+    const { title, description, code, price, stock, category } = newProduct;
     if (incompleteValues(title, description, code, price, stock, category))
       return res
         .status(400)
         .send({ status: "error", message: "Incomplete values" });
 
-    const response = await addProductService(product);
-    if (response?.status === "error") return res.status(404).send(response);
+    const product = await getProductByCodeService(code);
+    if (product)
+      return res
+        .status(404)
+        .send({ status: "error", message: "Code already exists" });
 
-    res.send({ status: "success", message: "Product added" });
+    const response = await addProductService(newProduct);
+
+    res.send({ status: "success", message: "Product added", response });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);

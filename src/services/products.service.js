@@ -36,10 +36,10 @@ const getAll = async () => await productsManager.getAll();
 
 const getProduct = async (pid) => await productsManager.getProduct(pid);
 
-const addProduct = async (product) => {
-  const exists = await productsManager.getProductByCOde(product.code);
-  if (exists) return { status: "error", message: "Code already exists" };
+const getProductByCode = async (code) =>
+  await productsManager.getProductByCode(code);
 
+const addProduct = async (product) => {
   const response = await productsManager.addProduct(product);
 
   const products = await productsManager.getAll();
@@ -68,6 +68,7 @@ export {
   getProductsPaginate,
   getAll,
   getProduct,
+  getProductByCode,
   addProduct,
   updateProduct,
   deleteProduct,

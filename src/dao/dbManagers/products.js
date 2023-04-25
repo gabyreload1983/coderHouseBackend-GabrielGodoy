@@ -22,7 +22,7 @@ export default class Products {
 
   getProduct = async (pid) => await productModel.findOne({ _id: pid });
 
-  getProductByCOde = async (code) => await productModel.findOne({ code });
+  getProductByCode = async (code) => await productModel.findOne({ code });
 
   updateProduct = async (pid, product) =>
     await productModel.updateOne({ _id: pid }, product);
