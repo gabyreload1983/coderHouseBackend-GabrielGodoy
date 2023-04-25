@@ -1,5 +1,6 @@
 import { incompleteValues } from "../lib/validators/validator.js";
 import {
+  getUserByEmail as getUserByEmailService,
   register as registerService,
   login as loginService,
   githubCallback as githubCallbackService,
@@ -21,16 +22,13 @@ const register = async (req, res) => {
         .status(400)
         .send({ status: "error", message: "Incomplete values" });
 
-    const response = await registerService(
-      first_name,
-      last_name,
-      email,
-      age,
-      role,
-      password
-    );
+    const user = await getUserByEmailService(email);
+    if (user)
+      return res
+        .status(400)
+        .send({ status: "error", message: "User already exists!" });
 
-    if (response?.status === "error") return res.status(400).send(response);
+    await registerService(first_name, last_name, email, age, role, password);
 
     res.send({ status: "success", message: "user registered" });
   } catch (error) {

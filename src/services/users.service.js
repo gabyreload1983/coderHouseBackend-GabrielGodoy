@@ -6,10 +6,9 @@ import { createHash, generateToken, validatePassword } from "../utils.js";
 const cartsManager = new Carts();
 const userManager = new Users();
 
-const register = async (first_name, last_name, email, age, role, password) => {
-  const user = await userManager.findByEmail(email);
-  if (user) return { status: "error", message: "User already exists" };
+const getUserByEmail = async (email) => userManager.findByEmail(email);
 
+const register = async (first_name, last_name, email, age, role, password) => {
   const newUser = {
     first_name,
     last_name,
@@ -55,4 +54,4 @@ const githubCallback = async (user) => {
   return generateToken(user);
 };
 
-export { register, login, githubCallback };
+export { getUserByEmail, register, login, githubCallback };
