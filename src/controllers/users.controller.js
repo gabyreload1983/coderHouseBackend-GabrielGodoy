@@ -5,6 +5,7 @@ import {
   login as loginService,
   githubCallback as githubCallbackService,
 } from "../services/users.service.js";
+import { generateToken, validatePassword } from "../utils.js";
 
 const register = async (req, res) => {
   try {
@@ -46,11 +47,20 @@ const login = async (req, res) => {
         .status(400)
         .send({ status: "error", message: "Incomplete values" });
 
-    const response = await loginService(email, password);
+    const user = await getUserByEmailService(email);
+    if (!user)
+      return res
+        .status(400)
+        .send({ status: "error", message: "Invalid credentials" });
 
-    if (response?.status === "error") return res.status(400).send(response);
+    if (!validatePassword(user, password))
+      return res
+        .status(400)
+        .send({ status: "error", message: "Invalid credentials" });
 
-    const accessToken = response;
+    const response = await loginService(user, password);
+
+    const accessToken = generateToken(response);
 
     res
       .cookie("coderCookieToken", accessToken, {

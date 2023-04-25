@@ -21,27 +21,20 @@ const register = async (first_name, last_name, email, age, role, password) => {
   return await userManager.create(newUser);
 };
 
-const login = async (email, password) => {
-  const user = await userManager.findByEmail(email);
-
-  if (!user) return { status: "error", message: "Invalid credentials" };
-
-  if (!validatePassword(user, password))
-    return { status: "error", message: "Invalid credentials" };
-
+const login = async (user, password) => {
   if (!user.cart) {
     const cart = await cartsManager.createCart();
     user.cart = cart._id.toString();
-    await userManager.update(email, user);
+    await userManager.update(user.email, user);
   }
 
-  if (isAdmin(email, password)) {
+  if (isAdmin(user.email, password)) {
     user.role = "admin";
   }
 
   user.password = "";
 
-  return generateToken(user);
+  return user;
 };
 
 const githubCallback = async (user) => {
