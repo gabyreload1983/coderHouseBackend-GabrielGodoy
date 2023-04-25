@@ -14,12 +14,7 @@ const addProduct = async (cart, product) => {
   return await cartsManager.addProduct(cart._id, cart);
 };
 
-const updateCart = async (cid, cart) => {
-  const exists = await cartsManager.getCart({ _id: cid });
-  if (!exists) return null;
-
-  return await cartsManager.update(cid, cart);
-};
+const updateCart = async (cid, cart) => await cartsManager.update(cid, cart);
 
 const updateQuantity = async (cid, pid, quantity) => {
   const cart = await cartsManager.getCart(cid);

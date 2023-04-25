@@ -76,14 +76,15 @@ const updateCart = async (req, res) => {
     if (isInvalidId(cid))
       return res.status(400).send({ status: "error", message: "Invalid id" });
 
+    const cart = await getCartService(cid);
+    if (!cart)
+      return res
+        .status(404)
+        .send({ status: "error", message: "cart not found" });
+
     const response = await updateCartService(cid, newCart);
 
-    if (!response)
-      return res
-        .status(400)
-        .send({ status: "error", message: "Cart id not found" });
-
-    res.send({ status: "success", message: "Cart updated" });
+    res.send({ status: "success", message: "Cart updated", response });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error });
