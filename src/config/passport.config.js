@@ -2,7 +2,7 @@ import passport from "passport";
 import GitHubStrategy from "passport-github2";
 import jwt from "passport-jwt";
 import Users from "../dao/dbManagers/users.js";
-import { PRIVATE_KEY } from "../utils.js";
+import config from "./config.js";
 
 const userManager = new Users();
 
@@ -15,7 +15,7 @@ const initializePassport = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: PRIVATE_KEY,
+        secretOrKey: config.private_key,
       },
       async (jwt_payload, done) => {
         try {
@@ -36,7 +36,7 @@ const initializePassport = () => {
       {
         clientID: "Iv1.d6a7c44f537782ef",
         clientSecret: "3b638abf00ff4451af1317f5f63d45ca7933fb60",
-        callbackURL: "http://localhost:8080/api/sessions/github-callback",
+        callbackURL: "http://localhost:8080/api/users/github-callback",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -51,7 +51,7 @@ const initializePassport = () => {
               password: "",
             };
 
-            const result = await userManager.add(newUser);
+            const result = await userManager.create(newUser);
 
             done(null, result);
           } else {

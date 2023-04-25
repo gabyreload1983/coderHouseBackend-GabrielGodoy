@@ -4,15 +4,14 @@ import fs from "fs";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import passport from "passport";
+import config from "./config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = dirname(__filename);
 
-export const PRIVATE_KEY = "CoderSecret";
-
 export const generateToken = (user) =>
-  jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "24h" });
+  jwt.sign({ user }, config.private_key, { expiresIn: "24h" });
 
 export const passportCall = (strategy) => {
   return async (req, res, next) => {
