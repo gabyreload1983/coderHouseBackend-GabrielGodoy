@@ -52,8 +52,6 @@ const updateProduct = async (pid, product) =>
 
 const deleteProduct = async (pid) => {
   const response = await productsManager.deleteProduct(pid);
-  if (response?.deletedCount === 0)
-    return { status: "error", message: "Product id not found" };
 
   const products = await productsManager.getAll();
   io.emit("realTimeProducts", products);
