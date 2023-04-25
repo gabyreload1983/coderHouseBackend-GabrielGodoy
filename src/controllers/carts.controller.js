@@ -130,13 +130,21 @@ const deleteProduct = async (req, res) => {
     if (isInvalidId(cid, pid))
       return res.status(400).send({ status: "error", message: "Invalid id" });
 
-    const response = await deleteProductService(cid, pid);
-    if (response?.status === "error")
+    const cart = await getCartService(cid);
+    if (!cart)
       return res
         .status(404)
-        .send({ status: "error", message: response.message });
+        .send({ status: "error", message: "cart not found" });
 
-    res.send({ status: "success", message: "Product was deleted." });
+    const product = await getProductService(pid);
+    if (!product)
+      return res
+        .status(404)
+        .send({ status: "error", message: "product not found" });
+
+    const response = await deleteProductService(cart, product);
+
+    res.send({ status: "success", message: "Product was deleted.", response });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error });

@@ -27,20 +27,8 @@ const updateQuantity = async (cart, product, quantity) => {
   return await cartsManager.update(cart._id, cart);
 };
 
-const deleteProduct = async (cid, pid) => {
-  const cart = await cartsManager.getCart(cid);
-  if (!cart) return { status: "error", message: "Cart id not found" };
-  const product = await productsManager.getProduct(pid);
-  if (!product) return { status: "error", message: "Product id not found" };
-
-  const index = cart.products.findIndex(
-    (p) => p.product._id.toString() === pid
-  );
-  if (index === -1)
-    return { status: "error", message: "Cart not containd that product" };
-
-  return await cartsManager.deleteProduct(cid, pid);
-};
+const deleteProduct = async (cart, product) =>
+  await cartsManager.deleteProduct(cart._id, product._id);
 
 const deleteAllProducts = async (cid) => {
   const cart = await cartsManager.getCart(cid);
