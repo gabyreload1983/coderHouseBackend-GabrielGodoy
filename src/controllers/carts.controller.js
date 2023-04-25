@@ -9,6 +9,8 @@ import {
   deleteAllProducts as deleteAllProductsService,
 } from "../services/carts.service.js";
 
+import { getProduct as getProductService } from "../services/products.service.js";
+
 const createCart = async (req, res) => {
   try {
     const response = await createCartService();
@@ -45,13 +47,21 @@ const addProduct = async (req, res) => {
     if (isInvalidId(cid, pid))
       return res.status(400).send({ status: "error", message: "Invalid id" });
 
-    const response = await addProductService(cid, pid);
-    if (response?.status === "error")
+    const cart = await getCartService(cid);
+    if (!cart)
       return res
         .status(404)
-        .send({ status: "error", message: response.message });
+        .send({ status: "error", message: "cart not found" });
 
-    res.send({ status: "success", message: "Product added." });
+    const product = await getProductService(pid);
+    if (!product)
+      return res
+        .status(404)
+        .send({ status: "error", message: "product not found" });
+
+    const response = await addProductService(cart, product);
+
+    res.send({ status: "success", message: "Product added.", response });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error });

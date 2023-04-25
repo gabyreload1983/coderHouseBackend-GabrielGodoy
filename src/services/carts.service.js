@@ -4,19 +4,14 @@ const createCart = async () => await cartsManager.createCart();
 
 const getCart = async (cid) => await cartsManager.getCart(cid);
 
-const addProduct = async (cid, pid) => {
-  const cart = await cartsManager.getCart(cid);
-  if (!cart) return { status: "error", message: "Cart id not found" };
-  const product = await productsManager.getProduct(pid);
-  if (!product) return { status: "error", message: "Product id not found" };
-
+const addProduct = async (cart, product) => {
   const index = cart.products.findIndex(
-    (p) => p.product._id.toString() === pid
+    (p) => p.product._id.toString() === product._id.toString()
   );
-  if (index === -1) cart.products.push({ product: pid });
+  if (index === -1) cart.products.push({ product: product._id });
   if (index !== -1) cart.products[index].quantity += 1;
 
-  await cartsManager.addProduct(cid, cart);
+  return await cartsManager.addProduct(cart._id, cart);
 };
 
 const updateCart = async (cid, cart) => {
