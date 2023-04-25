@@ -47,12 +47,8 @@ const addProduct = async (product) => {
   return response;
 };
 
-const updateProduct = async (pid, product) => {
-  const response = await productsManager.updateProduct(pid, product);
-  if (response?.matchedCount === 0)
-    return { status: "error", message: "Product id not found" };
-  return response;
-};
+const updateProduct = async (pid, product) =>
+  await productsManager.updateProduct(pid, product);
 
 const deleteProduct = async (pid) => {
   const response = await productsManager.deleteProduct(pid);

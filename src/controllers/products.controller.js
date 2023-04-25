@@ -71,10 +71,15 @@ const updateProduct = async (req, res) => {
     if (isInvalidId(pid))
       return res.status(400).send({ status: "error", message: "Invalid id" });
 
-    const response = await updateProductService(pid, newProduct);
-    if (response?.status === "error") return res.status(404).send(response);
+    const product = await getProductService(pid);
+    if (!product)
+      return res
+        .status(404)
+        .send({ status: "error", message: "Product not found" });
 
-    res.send({ status: "success", message: "Product update" });
+    const response = await updateProductService(pid, newProduct);
+
+    res.send({ status: "success", message: "Product update", response });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
