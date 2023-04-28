@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import config from "./config/config.js";
+import UsersDto from "./dao/DTOs/users.tdo.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -24,7 +25,7 @@ export const passportCall = (strategy) => {
           .send({ error: info.messages ? info.messages : info.toString() });
       }
 
-      req.user = user;
+      req.user = new UsersDto(user);
       next();
     })(req, res, next);
   };
