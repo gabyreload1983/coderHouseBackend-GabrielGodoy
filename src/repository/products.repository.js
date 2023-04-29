@@ -6,15 +6,16 @@ export default class ProductsRepository {
   getProductsPaginate = async (limit, page, query, sort) =>
     this.dao.getProductsPaginate(limit, page, query, sort);
 
-  getAll = async () => this.dao.getAll();
+  getAll = async () => await this.dao.getAll();
 
-  getProduct = async (pid) => this.dao.getProduct(pid);
+  getProduct = async (pid) => await this.dao.getProduct(pid);
 
-  getProductByCode = async (code) => this.dao.getProductByCode(code);
+  getProductByCode = async (code) => await this.dao.getProductByCode(code);
 
-  addProduct = async (product) => this.dao.addProduct(product);
+  addProduct = async (product) => await this.dao.addProduct(product);
 
-  updateProduct = async (pid, product) => this.dao.updateProduct(pid, product);
+  updateProduct = async (pid, product) =>
+    await this.dao.updateProduct(pid, product);
 
-  deleteProduct = async (pid) => this.dao.deleteProduct(pid);
+  deleteProduct = async (pid) => await this.dao.deleteProduct(pid);
 }
