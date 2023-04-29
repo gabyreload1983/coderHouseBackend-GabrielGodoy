@@ -1,10 +1,11 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
 import jwt from "passport-jwt";
-import Users from "../dao/dbManagers/users.js";
 import config from "./config.js";
+import UsersRepository from "../repository/users.repository.js";
+import { usersManager } from "../dao/index.js";
 
-const userManager = new Users();
+const userRepository = new UsersRepository(usersManager);
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
@@ -40,19 +41,9 @@ const initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const user = await userManager.findByEmail(profile._json.email);
+          const user = await userRepository.findByEmail(profile._json.email);
           if (!user) {
-            const newUser = {
-              first_name: profile._json.name,
-              last_name: "",
-              email: profile._json.email,
-              age: "",
-              cart: "",
-              password: "",
-            };
-
-            const result = await userManager.create(newUser);
-
+            const result = await userRepository.createGitHubUser(profile._json);
             done(null, result);
           } else {
             done(null, user);
@@ -69,7 +60,7 @@ const initializePassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    const user = await userManager.findById(id);
+    const user = await userRepository.findById(id);
     done(null, user);
   });
 };

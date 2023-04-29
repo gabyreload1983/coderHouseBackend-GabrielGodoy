@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import config from "./config/config.js";
-import UsersDto from "./dao/DTOs/users.tdo.js";
+import UsersDto from "./dao/DTOs/users.dto.js";
 
 const __filename = fileURLToPath(import.meta.url);
 

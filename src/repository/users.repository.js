@@ -1,4 +1,4 @@
-import UsersDto from "../dao/DTOs/users.tdo.js";
+import UsersDto from "../dao/DTOs/users.dto.js";
 
 export default class UsersRepository {
   constructor(dao) {
@@ -6,6 +6,9 @@ export default class UsersRepository {
   }
 
   create = async (user) => await this.dao.create(user);
+
+  createGitHubUser = async (user) =>
+    await this.dao.create(UsersDto.formatGitHubUser(user));
 
   login = async (user) => (user = new UsersDto(user));
 
