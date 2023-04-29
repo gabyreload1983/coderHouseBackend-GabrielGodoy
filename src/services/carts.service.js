@@ -1,8 +1,11 @@
-import { cartsManager, productsManager } from "../dao/index.js";
+import { cartsManager } from "../dao/index.js";
+import CartsRepository from "../repository/carts.repository.js";
 
-const createCart = async () => await cartsManager.createCart();
+const cartRepository = new CartsRepository(cartsManager);
 
-const getCart = async (cid) => await cartsManager.getCart(cid);
+const createCart = async () => await cartRepository.createCart();
+
+const getCart = async (cid) => await cartRepository.getCart(cid);
 
 const addProduct = async (cart, product) => {
   const index = cart.products.findIndex(
@@ -11,10 +14,11 @@ const addProduct = async (cart, product) => {
   if (index === -1) cart.products.push({ product: product._id });
   if (index !== -1) cart.products[index].quantity += 1;
 
-  return await cartsManager.addProduct(cart._id, cart);
+  return await cartRepository.addProduct(cart._id, cart);
 };
 
-const updateCart = async (cid, cart) => await cartsManager.update(cid, cart);
+const updateCart = async (cid, cart) =>
+  await cartRepository.updateCart(cid, cart);
 
 const updateQuantity = async (cart, product, quantity) => {
   const index = cart.products.findIndex(
@@ -24,14 +28,14 @@ const updateQuantity = async (cart, product, quantity) => {
 
   if (index !== -1) cart.products[index].quantity = quantity;
 
-  return await cartsManager.update(cart._id, cart);
+  return await cartRepository.updateCart(cart._id, cart);
 };
 
 const deleteProduct = async (cart, product) =>
-  await cartsManager.deleteProduct(cart._id, product._id);
+  await cartRepository.deleteProduct(cart._id, product._id);
 
 const deleteAllProducts = async (cart) =>
-  await cartsManager.deleteAllProducts(cart._id);
+  await cartRepository.deleteAllProducts(cart._id);
 
 export {
   createCart,
