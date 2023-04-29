@@ -12,7 +12,7 @@ import usersRouter from "./routes/api/users.router.js";
 import messagesRouter from "./routes/api/messages.router.js";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
-import * as messagesService from "./services/messages.service.js";
+import { chat } from "./chat/chat.js";
 
 const app = express();
 
@@ -36,23 +36,6 @@ app.use("/api/messages", messagesRouter);
 app.use("/", viewsRouter);
 
 const server = app.listen(8080, () => console.log("Listening on port 8080"));
-const io = new Server(server);
+export const io = new Server(server);
 
-io.on("connection", (socket) => {
-  console.log(`Nuevo cliente conectado. ID: ${socket.id}`);
-
-  socket.on("message", async ({ user, message }) => {
-    await messagesService.addMessage(user, message);
-    const messages = await messagesService.getMessages();
-
-    io.emit("messageLogs", messages);
-  });
-
-  socket.on("authenticated", async (user) => {
-    const messages = await messagesService.getMessages();
-    socket.emit("messageLogs", messages);
-    socket.broadcast.emit("newUserConnected", user);
-  });
-});
-
-export { io };
+io.on("connection", (socket) => chat(socket));
