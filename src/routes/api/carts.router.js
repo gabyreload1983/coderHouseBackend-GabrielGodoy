@@ -9,12 +9,18 @@ import {
   updateCart,
   updateQuantity,
 } from "../../controllers/carts.controller.js";
+import { authorization, passportCall } from "../../utils.js";
 
 const router = Router();
 
 router.post("/", createCart);
 router.get("/:cid", getCart);
-router.post("/:cid/product/:pid", addProduct);
+router.post(
+  "/:cid/product/:pid",
+  passportCall("jwt"),
+  authorization("user"),
+  addProduct
+);
 router.put("/:cid", updateCart);
 router.put("/:cid/product/:pid", updateQuantity);
 router.delete("/:cid/products/:pid", deleteProduct);
