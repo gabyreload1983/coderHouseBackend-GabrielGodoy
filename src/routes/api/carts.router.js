@@ -6,6 +6,7 @@ import {
   deleteAllProducts,
   deleteProduct,
   getCart,
+  purchase,
   updateCart,
   updateQuantity,
 } from "../../controllers/carts.controller.js";
@@ -25,5 +26,7 @@ router.put("/:cid", updateCart);
 router.put("/:cid/product/:pid", updateQuantity);
 router.delete("/:cid/products/:pid", deleteProduct);
 router.delete("/:cid/", deleteAllProducts);
+
+router.post("/:cid/purchase", passportCall("jwt"), purchase);
 
 export default router;

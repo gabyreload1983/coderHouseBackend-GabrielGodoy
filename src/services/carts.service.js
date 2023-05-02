@@ -1,5 +1,8 @@
+import { nanoid } from "nanoid";
 import { cartsManager } from "../dao/index.js";
 import CartsRepository from "../repository/carts.repository.js";
+import * as productsService from "./products.service.js";
+import * as ticketsService from "./tickets.service.js";
 
 const cartRepository = new CartsRepository(cartsManager);
 
@@ -37,6 +40,35 @@ const deleteProduct = async (cart, product) =>
 const deleteAllProducts = async (cart) =>
   await cartRepository.deleteAllProducts(cart._id);
 
+const purchase = async (cart, email) => {
+  const ticket = {
+    code: nanoid(20),
+    amount: 0,
+    purchaser: email,
+  };
+
+  for (let productCart of cart.products) {
+    const pid = productCart.product._id.toString();
+    const quantity = productCart.quantity;
+    const productDB = await productsService.getProduct(pid);
+    if (productDB.stock >= quantity) {
+      ticket.amount += productDB.price * quantity;
+      productDB.stock = productDB.stock - quantity;
+      await productsService.updateProduct(pid, productDB);
+
+      cart.products = cart.products.filter(
+        (p) => p.product._id.toString() !== pid
+      );
+
+      await updateCart(cart._id, cart);
+    }
+  }
+
+  if (ticket.amount) cart.ticket = await ticketsService.createTicket(ticket);
+
+  return cart;
+};
+
 export {
   createCart,
   getCart,
@@ -45,4 +77,5 @@ export {
   updateQuantity,
   deleteProduct,
   deleteAllProducts,
+  purchase,
 };
