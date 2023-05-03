@@ -193,13 +193,21 @@ const purchase = async (req, res) => {
     if (result.products.length === 0)
       return res.send({
         status: "success",
-        message: `Purchase success`,
+        message: `Purchase success. We send you an email`,
         result,
       });
 
+    if (result?.ticket) {
+      return res.send({
+        status: "success",
+        message: `Purchase success. We send you an email. There is not enough stock of some products. Which were left in the cart. `,
+        result,
+      });
+    }
+
     res.send({
       status: "error",
-      message: `There is not enough stock of some products. Which were left in the cart`,
+      message: `There is not enough stock of products. Which were left in the cart`,
       result,
     });
   } catch (error) {
