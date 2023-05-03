@@ -4,6 +4,7 @@ import fs from "fs";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import passport from "passport";
+import nodemailer from "nodemailer";
 import config from "./config/config.js";
 import UsersDto from "./dao/DTOs/users.dto.js";
 
@@ -46,6 +47,15 @@ export const createHash = (password) =>
 
 export const validatePassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
+
+export const transporter = nodemailer.createTransport({
+  service: "gmail",
+  port: 587,
+  auth: {
+    user: config.gmail_user,
+    pass: config.gmail_pass,
+  },
+});
 
 // fileSystem
 const generateId = (array) => {
