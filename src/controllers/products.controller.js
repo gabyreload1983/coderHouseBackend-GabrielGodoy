@@ -6,6 +6,7 @@ import {
   getProduct as getProductService,
   getProductsPaginate as getProductsPaginateService,
   getProductByCode as getProductByCodeService,
+  getMockingProducts as getMockingProductsService,
 } from "../services/products.service.js";
 
 const getProductsPaginate = async (req, res) => {
@@ -107,10 +108,16 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const getMockingProducts = async (req, res) => {
+  const response = await getMockingProductsService(100);
+  res.send({ status: "success", message: "Mocking products", response });
+};
+
 export {
   getProductsPaginate,
   getProduct,
   addProduct,
   updateProduct,
   deleteProduct,
+  getMockingProducts,
 };
