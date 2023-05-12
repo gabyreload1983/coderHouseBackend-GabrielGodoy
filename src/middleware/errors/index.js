@@ -9,6 +9,13 @@ export default (error, req, res, next) => {
       });
       break;
 
+    case EErrors.NOT_FOUND:
+      res.status(404).send({
+        status: error.status,
+        message: error.message,
+      });
+      break;
+
     default:
       res.send({
         status: "error",

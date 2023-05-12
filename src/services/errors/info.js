@@ -13,3 +13,11 @@ export const addProductErrorInfo = (product) => {
 export const addDuplicateProductErrorInfo = (code) => {
   return `Code "${code}" already exists`;
 };
+
+export const invalidIdErrorInfo = () => {
+  return `You entered an invalid id`;
+};
+
+export const notFoundErrorInfo = (item) => {
+  return `${item} not found!`;
+};
