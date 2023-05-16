@@ -1,3 +1,4 @@
+import logger from "../../logger/logger.js";
 import { generateId, readInfo, writeInfo } from "../../utils.js";
 
 export default class CartService {
@@ -14,7 +15,7 @@ export default class CartService {
       await writeInfo(carts, this.path);
       return { status: "success" };
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return { status: "error", error: error.message };
     }
   };
@@ -25,7 +26,7 @@ export default class CartService {
       const carts = JSON.parse(data);
       return carts.find((c) => c._id === Number(cid));
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   };
 
@@ -48,7 +49,7 @@ export default class CartService {
       await writeInfo(newCarts, this.path);
       return { status: "success" };
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   };
 }

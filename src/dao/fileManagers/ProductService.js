@@ -1,3 +1,4 @@
+import logger from "../../logger/logger.js";
 import { generateId, validateId, writeInfo, readInfo } from "../../utils.js";
 
 export default class ProductService {
@@ -48,7 +49,7 @@ export default class ProductService {
       await writeInfo(products, this.path);
       return { status: "success" };
     } catch (error) {
-      console.log(`Error al agregar producto: ${error}`);
+      logger.error(`Error al agregar producto: ${error}`);
       return { status: "error", error };
     }
   };
@@ -58,7 +59,7 @@ export default class ProductService {
       let data = await readInfo(this.path);
       return JSON.parse(data);
     } catch (error) {
-      console.log(`Error al obtener productos: ${error}`);
+      logger.error(`Error al obtener productos: ${error}`);
     }
   };
 
@@ -70,7 +71,7 @@ export default class ProductService {
       if (product) return product;
       throw new Error(`No existe un producto con el id ${id}`);
     } catch (error) {
-      console.log(`Error al obtener producto: ${error}`);
+      logger.error(`Error al obtener producto: ${error}`);
     }
   };
 
@@ -89,7 +90,7 @@ export default class ProductService {
       await writeInfo(updateProducts, this.path);
       return { status: "success" };
     } catch (error) {
-      console.log(`Error al actualizar producto: ${error}`);
+      logger.error(`Error al actualizar producto: ${error}`);
       return { status: "error", error: error.message };
     }
   };
@@ -105,7 +106,7 @@ export default class ProductService {
       await writeInfo(filterProducts, this.path);
       return { status: "success" };
     } catch (error) {
-      console.log(`Error al borrar producto: ${error}`);
+      logger.error(`Error al borrar producto: ${error}`);
       return { status: "error", error: error.message };
     }
   };
