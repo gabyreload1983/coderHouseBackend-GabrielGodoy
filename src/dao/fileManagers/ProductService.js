@@ -1,5 +1,10 @@
 import logger from "../../logger/logger.js";
-import { generateId, validateId, writeInfo, readInfo } from "../../utils.js";
+import {
+  generateId,
+  validateId,
+  writeInfo,
+  readInfo,
+} from "../../utils/utilsFileSystem.js";
 
 export default class ProductService {
   constructor(path) {

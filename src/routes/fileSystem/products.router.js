@@ -1,6 +1,6 @@
 import { Router } from "express";
 import ProductService from "../../dao/fileManagers/ProductService.js";
-import { getAbsolutePath } from "../../utils.js";
+import { getAbsolutePath } from "../../utils/utilsFileSystem.js";
 import { io } from "../../app.js";
 import logger from "../../logger/logger.js";
 

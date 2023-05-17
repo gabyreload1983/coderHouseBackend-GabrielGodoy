@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAbsolutePath } from "../../utils.js";
+import { getAbsolutePath } from "../../utils/utilsFileSystem.js";
 import ProductService from "../../dao/fileManagers/ProductService.js";
 import CartService from "../../dao/fileManagers/CartService.js";
 import logger from "../../logger/logger.js";

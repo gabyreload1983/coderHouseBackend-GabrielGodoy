@@ -1,5 +1,9 @@
 import logger from "../../logger/logger.js";
-import { generateId, readInfo, writeInfo } from "../../utils.js";
+import {
+  generateId,
+  readInfo,
+  writeInfo,
+} from "../../utils/utilsFileSystem.js";
 
 export default class CartService {
   constructor(path) {
