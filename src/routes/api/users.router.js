@@ -1,33 +1,27 @@
 import { Router } from "express";
 import passport from "passport";
 import { passportCall } from "../../utils.js";
-import {
-  current,
-  github,
-  githubCallback,
-  login,
-  logout,
-  register,
-  sendEmailResetPassword,
-  resetPassword,
-} from "../../controllers/users.controller.js";
+import * as usersController from "../../controllers/users.controller.js";
 
 const router = Router();
 
-router.post("/register", register);
+router.post("/register", usersController.register);
 
-router.post("/login", login);
+router.post("/login", usersController.login);
 
-router.get("/logout", logout);
+router.get("/logout", usersController.logout);
 
-router.post("/send-email-reset-password", sendEmailResetPassword);
+router.post(
+  "/send-email-reset-password",
+  usersController.sendEmailResetPassword
+);
 
-router.post("/reset-password", resetPassword);
+router.post("/reset-password", usersController.resetPassword);
 
 router.get(
   "/github",
   passport.authenticate("github", { session: false, scope: ["user:email"] }),
-  github
+  usersController.github
 );
 
 router.get(
@@ -36,9 +30,9 @@ router.get(
     session: false,
     failureRedirect: "/login",
   }),
-  githubCallback
+  usersController.githubCallback
 );
 
-router.get("/current", passportCall("jwt"), current);
+router.get("/current", passportCall("jwt"), usersController.current);
 
 export default router;
