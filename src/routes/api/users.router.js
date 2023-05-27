@@ -8,6 +8,7 @@ import {
   login,
   logout,
   register,
+  sendEmailResetPassword,
 } from "../../controllers/users.controller.js";
 
 const router = Router();
@@ -17,6 +18,8 @@ router.post("/register", register);
 router.post("/login", login);
 
 router.get("/logout", logout);
+
+router.post("/send-email-reset-password", sendEmailResetPassword);
 
 router.get(
   "/github",

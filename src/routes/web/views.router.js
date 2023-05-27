@@ -129,4 +129,8 @@ router.get(
   }
 );
 
+router.get("/send-email-reset-password", (req, res) => {
+  res.render("sendEmailResetPassword");
+});
+
 export default router;
