@@ -9,6 +9,7 @@ import {
   logout,
   register,
   sendEmailResetPassword,
+  resetPassword,
 } from "../../controllers/users.controller.js";
 
 const router = Router();
@@ -20,6 +21,8 @@ router.post("/login", login);
 router.get("/logout", logout);
 
 router.post("/send-email-reset-password", sendEmailResetPassword);
+
+router.post("/reset-password", resetPassword);
 
 router.get(
   "/github",

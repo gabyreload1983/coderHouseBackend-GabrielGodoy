@@ -18,7 +18,7 @@ const usersSchema = new mongoose.Schema({
   },
   resetPasswordDate: {
     type: Date,
-    default: null,
+    default: 0,
   },
 });
 

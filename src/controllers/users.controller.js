@@ -130,6 +130,27 @@ const current = async (req, res) => {
   res.send({ user: req.user });
 };
 
+const resetPassword = async (req, res) => {
+  try {
+    const { password, id } = req.body;
+    if (incompleteValues(password, id))
+      return res
+        .status(400)
+        .send({ status: "error", message: "Incomplete values" });
+
+    const result = await userService.resetPassword(id, password);
+    if (!result)
+      return res
+        .status(400)
+        .send({ status: "error", message: "Can not enter current password" });
+
+    res.send({ status: "success", message: "Password update successfully" });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
+};
+
 export {
   register,
   login,
@@ -138,4 +159,5 @@ export {
   githubCallback,
   current,
   sendEmailResetPassword,
+  resetPassword,
 };

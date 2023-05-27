@@ -4,7 +4,7 @@ import { cartsManager } from "../dao/index.js";
 import UsersRepository from "../repository/users.repository.js";
 import CartsRepository from "../repository/carts.repository.js";
 import { isAdmin } from "../lib/validators/validator.js";
-import { createHash, generateToken } from "../utils.js";
+import { createHash, generateToken, validatePassword } from "../utils.js";
 import { sendEmail } from "./email.service.js";
 import config from "../config/config.js";
 
@@ -86,4 +86,13 @@ export const validateUrlExpiration = async (id) => {
   const expirationDate = moment(user.resetPasswordDate).utc().format();
   const diff = now.diff(expirationDate, "minutes");
   return diff < config.reset_password_minutes;
+};
+
+export const resetPassword = async (id, password) => {
+  const user = await userRepository.findById(id);
+  const samePassword = validatePassword(user, password);
+  if (samePassword) return false;
+  user.password = createHash(password);
+  user.resetPasswordDate = 0;
+  return await userRepository.update(user.email, user);
 };
