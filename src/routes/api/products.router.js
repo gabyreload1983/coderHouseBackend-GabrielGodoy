@@ -1,31 +1,34 @@
 import { Router } from "express";
-import {
-  addProduct,
-  deleteProduct,
-  getProduct,
-  getProductsPaginate,
-  updateProduct,
-  getMockingProducts,
-} from "../../controllers/products.controller.js";
+import * as productsController from "../../controllers/products.controller.js";
 import { authorization, passportCall } from "../../utils.js";
 
 const router = Router();
 
-router.get("/", getProductsPaginate);
+router.get("/", productsController.getProductsPaginate);
 
-router.get("/mocking-products", getMockingProducts);
+router.get("/mocking-products", productsController.getMockingProducts);
 
-router.get("/:pid", getProduct);
+router.get("/:pid", productsController.getProduct);
 
-router.post("/", passportCall("jwt"), authorization("admin"), addProduct);
+router.post(
+  "/",
+  passportCall("jwt"),
+  authorization("admin"),
+  productsController.addProduct
+);
 
-router.put("/:pid", passportCall("jwt"), authorization("admin"), updateProduct);
+router.put(
+  "/:pid",
+  passportCall("jwt"),
+  authorization("admin"),
+  productsController.updateProduct
+);
 
 router.delete(
   "/:pid",
   passportCall("jwt"),
   authorization("admin"),
-  deleteProduct
+  productsController.deleteProduct
 );
 
 export default router;
