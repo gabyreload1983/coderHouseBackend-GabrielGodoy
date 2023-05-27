@@ -1,66 +1,59 @@
 import { Router } from "express";
 import passport from "passport";
 import { authorization, passportCall } from "../../utils.js";
-import {
-  cart,
-  chat,
-  home,
-  login,
-  productsDetail,
-  productsPaginate,
-  profile,
-  realTimeProducts,
-  register,
-  sendEmailResetPassword,
-  resetPassword,
-} from "../../controllers/view.controller.js";
+import * as viewController from "../../controllers/view.controller.js";
 
 const router = Router();
 
 router.get(
   "/",
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
-  home
+  viewController.home
 );
 
 router.get(
   "/realtimeproducts",
   passport.authenticate("jwt", { session: false }),
-  realTimeProducts
+  viewController.realTimeProducts
 );
 
-router.get("/chat", passportCall("jwt"), authorization("user"), chat);
+router.get(
+  "/chat",
+  passportCall("jwt"),
+  authorization("user"),
+  viewController.chat
+);
 
 router.get(
   "/products/",
   passport.authenticate("jwt", { session: false }),
-  productsPaginate
+  viewController.productsPaginate
 );
 
 router.get(
   "/products/:pid",
   passport.authenticate("jwt", { session: false }),
-  productsDetail
+  viewController.productsDetail
 );
 
 router.get(
   "/carts/:cid",
   passport.authenticate("jwt", { session: false }),
-  cart
+  viewController.cart
 );
 
-router.get("/register", register);
+router.get("/register", viewController.register);
 
-router.get("/login", login);
+router.get("/login", viewController.login);
 
 router.get(
   "/profile",
   passport.authenticate("jwt", { session: false }),
-  profile
+  viewController.profile
 );
 
-router.get("/send-email-reset-password", sendEmailResetPassword);
+router.get("/send-email-reset-password", viewController.sendEmailResetPassword);
 
-router.get("/reset-password", resetPassword);
+router.get("/reset-password", viewController.resetPassword);
 
 export default router;
