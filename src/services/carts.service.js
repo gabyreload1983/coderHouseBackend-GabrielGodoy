@@ -7,11 +7,11 @@ import { transporter } from "../utils.js";
 
 const cartRepository = new CartsRepository(cartsManager);
 
-const createCart = async () => await cartRepository.createCart();
+export const createCart = async () => await cartRepository.createCart();
 
-const getCart = async (cid) => await cartRepository.getCart(cid);
+export const getCart = async (cid) => await cartRepository.getCart(cid);
 
-const addProduct = async (cart, product) => {
+export const addProduct = async (cart, product) => {
   const index = cart.products.findIndex(
     (p) => p.product._id.toString() === product._id.toString()
   );
@@ -21,10 +21,10 @@ const addProduct = async (cart, product) => {
   return await cartRepository.addProduct(cart._id, cart);
 };
 
-const updateCart = async (cid, cart) =>
+export const updateCart = async (cid, cart) =>
   await cartRepository.updateCart(cid, cart);
 
-const updateQuantity = async (cart, product, quantity) => {
+export const updateQuantity = async (cart, product, quantity) => {
   const index = cart.products.findIndex(
     (p) => p.product._id.toString() === product._id.toString()
   );
@@ -35,13 +35,13 @@ const updateQuantity = async (cart, product, quantity) => {
   return await cartRepository.updateCart(cart._id, cart);
 };
 
-const deleteProduct = async (cart, product) =>
+export const deleteProduct = async (cart, product) =>
   await cartRepository.deleteProduct(cart._id, product._id);
 
-const deleteAllProducts = async (cart) =>
+export const deleteAllProducts = async (cart) =>
   await cartRepository.deleteAllProducts(cart._id);
 
-const purchase = async (cart, email) => {
+export const purchase = async (cart, email) => {
   const ticket = {
     code: nanoid(20),
     amount: 0,
@@ -81,15 +81,4 @@ const purchase = async (cart, email) => {
   }
 
   return cart;
-};
-
-export {
-  createCart,
-  getCart,
-  addProduct,
-  updateCart,
-  updateQuantity,
-  deleteProduct,
-  deleteAllProducts,
-  purchase,
 };
