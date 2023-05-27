@@ -6,6 +6,7 @@ import CartsRepository from "../repository/carts.repository.js";
 import { isAdmin } from "../lib/validators/validator.js";
 import { createHash, generateToken } from "../utils.js";
 import { sendEmail } from "./email.service.js";
+import config from "../config/config.js";
 
 const cartRepository = new CartsRepository(cartsManager);
 const userRepository = new UsersRepository(usersManager);
@@ -60,7 +61,7 @@ export const githubCallback = async (user) => {
 };
 
 export const sendEmailResetPassword = async (user) => {
-  const expirationDate = moment(new Date()).format();
+  const expirationDate = moment().format();
   user.resetPasswordDate = expirationDate;
   await userRepository.update(user.email, user);
 
@@ -77,4 +78,12 @@ export const sendEmailResetPassword = async (user) => {
   };
 
   await sendEmail(dataEmail);
+};
+
+export const validateUrlExpiration = async (id) => {
+  const user = await userRepository.findById(id);
+  const now = new moment();
+  const expirationDate = moment(user.resetPasswordDate).utc().format();
+  const diff = now.diff(expirationDate, "minutes");
+  return diff < config.reset_password_minutes;
 };

@@ -9,6 +9,7 @@ import { isInvalidId } from "../../lib/validators/validator.js";
 import { getCart } from "../../services/carts.service.js";
 import { authorization, passportCall } from "../../utils.js";
 import logger from "../../logger/logger.js";
+import { validateUrlExpiration } from "../../controllers/view.controller.js";
 
 const router = Router();
 
@@ -132,5 +133,7 @@ router.get(
 router.get("/send-email-reset-password", (req, res) => {
   res.render("sendEmailResetPassword");
 });
+
+router.get("/reset-password", validateUrlExpiration);
 
 export default router;
