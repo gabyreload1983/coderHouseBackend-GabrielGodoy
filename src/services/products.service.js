@@ -5,7 +5,7 @@ import { generateProduct } from "../mocking/products.mock.js";
 
 const productRepository = new ProductsRepository(productsManager);
 
-const getProductsPaginate = async (limit, page, query, sort) => {
+export const getProductsPaginate = async (limit, page, query, sort) => {
   if (query) query = JSON.parse(query);
   if (sort) sort = { price: sort };
 
@@ -36,14 +36,15 @@ const getProductsPaginate = async (limit, page, query, sort) => {
   return response;
 };
 
-const getAll = async () => await productRepository.getAll();
+export const getAll = async () => await productRepository.getAll();
 
-const getProduct = async (pid) => await productRepository.getProduct(pid);
+export const getProduct = async (pid) =>
+  await productRepository.getProduct(pid);
 
-const getProductByCode = async (code) =>
+export const getProductByCode = async (code) =>
   await productRepository.getProductByCode(code);
 
-const addProduct = async (product) => {
+export const addProduct = async (product) => {
   const response = await productRepository.addProduct(product);
 
   const products = await productRepository.getAll();
@@ -51,10 +52,10 @@ const addProduct = async (product) => {
   return response;
 };
 
-const updateProduct = async (pid, product) =>
+export const updateProduct = async (pid, product) =>
   await productRepository.updateProduct(pid, product);
 
-const deleteProduct = async (pid) => {
+export const deleteProduct = async (pid) => {
   const response = await productRepository.deleteProduct(pid);
 
   const products = await productRepository.getAll();
@@ -62,21 +63,10 @@ const deleteProduct = async (pid) => {
   return response;
 };
 
-const getMockingProducts = async (quantity) => {
+export const getMockingProducts = async (quantity) => {
   const mockingProducts = [];
   for (let i = 0; i < quantity; i++) {
     mockingProducts.push(generateProduct());
   }
   return mockingProducts;
-};
-
-export {
-  getProductsPaginate,
-  getAll,
-  getProduct,
-  getProductByCode,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  getMockingProducts,
 };

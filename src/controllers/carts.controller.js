@@ -17,7 +17,7 @@ import {
   notFoundErrorInfo,
 } from "../services/errors/info.js";
 
-import { getProduct as getProductService } from "../services/products.service.js";
+import * as productsService from "../services/products.service.js";
 
 const createCart = async (req, res) => {
   try {
@@ -69,7 +69,7 @@ const addProduct = async (req, res, next) => {
       throw err;
     }
 
-    const product = await getProductService(pid);
+    const product = await productsService.getProduct(pid);
     if (!product) {
       const err = CustomError.createError({
         message: notFoundErrorInfo("product"),
@@ -128,7 +128,7 @@ const updateQuantity = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "cart not found" });
 
-    const product = await getProductService(pid);
+    const product = await productsService.getProduct(pid);
     if (!product)
       return res
         .status(404)
@@ -155,7 +155,7 @@ const deleteProduct = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "cart not found" });
 
-    const product = await getProductService(pid);
+    const product = await productsService.getProduct(pid);
     if (!product)
       return res
         .status(404)
