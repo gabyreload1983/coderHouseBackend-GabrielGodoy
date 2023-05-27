@@ -3,7 +3,7 @@ import logger from "../logger/logger.js";
 import * as userService from "../services/users.service.js";
 import { generateToken, validatePassword } from "../utils.js";
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const {
       first_name,
@@ -41,7 +41,7 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -77,12 +77,12 @@ const login = async (req, res) => {
   }
 };
 
-const logout = (req, res) => {
+export const logout = (req, res) => {
   res.clearCookie("coderCookieToken");
   res.redirect("/login");
 };
 
-const sendEmailResetPassword = async (req, res) => {
+export const sendEmailResetPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -106,11 +106,11 @@ const sendEmailResetPassword = async (req, res) => {
   }
 };
 
-const github = async (req, res) => {
+export const github = async (req, res) => {
   res.send({ status: "sucess", message: "user registered" });
 };
 
-const githubCallback = async (req, res) => {
+export const githubCallback = async (req, res) => {
   try {
     const accessToken = await userService.githubCallback(req.user);
 
@@ -126,11 +126,11 @@ const githubCallback = async (req, res) => {
   }
 };
 
-const current = async (req, res) => {
+export const current = async (req, res) => {
   res.send({ user: req.user });
 };
 
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
     const { password, id } = req.body;
     if (incompleteValues(password, id))
@@ -149,15 +149,4 @@ const resetPassword = async (req, res) => {
     logger.error(error.message);
     res.status(500).send(error);
   }
-};
-
-export {
-  register,
-  login,
-  logout,
-  github,
-  githubCallback,
-  current,
-  sendEmailResetPassword,
-  resetPassword,
 };
