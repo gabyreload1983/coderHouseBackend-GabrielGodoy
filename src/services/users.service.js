@@ -14,6 +14,8 @@ const userRepository = new UsersRepository(usersManager);
 export const getUserByEmail = async (email) =>
   userRepository.findByEmail(email);
 
+export const getUserById = async (id) => userRepository.findById(id);
+
 export const register = async (
   first_name,
   last_name,
@@ -95,4 +97,8 @@ export const resetPassword = async (id, password) => {
   user.password = createHash(password);
   user.resetPasswordDate = 0;
   return await userRepository.update(user.email, user);
+};
+export const updateRole = async (user, role) => {
+  user.role = role;
+  await userRepository.update(user.email, user);
 };

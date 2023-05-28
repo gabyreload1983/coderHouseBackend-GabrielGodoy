@@ -1,4 +1,4 @@
-import { incompleteValues } from "../lib/validators/validator.js";
+import { incompleteValues, isInvalidId } from "../lib/validators/validator.js";
 import logger from "../logger/logger.js";
 import * as userService from "../services/users.service.js";
 import { generateToken, validatePassword } from "../utils.js";
@@ -145,6 +145,32 @@ export const resetPassword = async (req, res) => {
         .send({ status: "error", message: "Can not enter current password" });
 
     res.send({ status: "success", message: "Password update successfully" });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
+};
+
+export const updateRole = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const { role } = req.body;
+
+    if (isInvalidId(uid))
+      return res.status(400).send({ status: "error", message: "Invalid id" });
+
+    if (!["user", "premium"].includes(role))
+      return res.status(400).send({ status: "error", message: "Invalid role" });
+
+    const user = await userService.getUserById(uid);
+    if (!user)
+      return res
+        .status(404)
+        .send({ status: "error", message: "User not found" });
+
+    await userService.updateRole(user, role);
+
+    res.send({ status: "success", message: "User update successfully" });
   } catch (error) {
     logger.error(error.message);
     res.status(500).send(error);

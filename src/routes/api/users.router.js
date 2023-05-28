@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { passportCall } from "../../utils.js";
+import { authorization, passportCall } from "../../utils.js";
 import * as usersController from "../../controllers/users.controller.js";
 
 const router = Router();
@@ -34,5 +34,12 @@ router.get(
 );
 
 router.get("/current", passportCall("jwt"), usersController.current);
+
+router.post(
+  "/premium/:uid",
+  passportCall("jwt"),
+  authorization("admin"),
+  usersController.updateRole
+);
 
 export default router;
