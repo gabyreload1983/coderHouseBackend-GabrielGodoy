@@ -11,7 +11,8 @@ export const createCart = async () => await cartRepository.createCart();
 
 export const getCart = async (cid) => await cartRepository.getCart(cid);
 
-export const addProduct = async (cart, product) => {
+export const addProduct = async (cart, product, user) => {
+  if (product.owner === user.email) return false;
   const index = cart.products.findIndex(
     (p) => p.product._id.toString() === product._id.toString()
   );

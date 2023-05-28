@@ -69,7 +69,11 @@ export const addProduct = async (req, res, next) => {
       throw err;
     }
 
-    const response = await cartsService.addProduct(cart, product);
+    const response = await cartsService.addProduct(cart, product, req.user);
+    if (!response)
+      return res
+        .status(403)
+        .send({ status: "error", message: "You don't have permissions" });
 
     res.send({ status: "success", message: "Product added.", response });
   } catch (error) {

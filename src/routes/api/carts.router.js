@@ -9,7 +9,7 @@ router.get("/:cid", cartsController.getCart);
 router.post(
   "/:cid/product/:pid",
   passportCall("jwt"),
-  authorization("user"),
+  authorization("user", "premium"),
   cartsController.addProduct
 );
 router.put("/:cid", cartsController.updateCart);
