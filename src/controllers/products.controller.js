@@ -96,7 +96,16 @@ export const updateProduct = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "Product not found" });
 
-    const response = await productsService.updateProduct(pid, newProduct);
+    const response = await productsService.updateProduct(
+      product,
+      newProduct,
+      req.user
+    );
+
+    if (!response)
+      return res
+        .status(403)
+        .send({ status: "error", message: "You don't have permissions" });
 
     res.send({ status: "success", message: "Product update", response });
   } catch (error) {
