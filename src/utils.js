@@ -31,9 +31,9 @@ export const passportCall = (strategy) => {
   };
 };
 
-export const authorization = (role) => {
+export const authorization = (...roles) => {
   return async (req, res, next) => {
-    if (req.user.role !== role)
+    if (!roles.includes(req.user.role))
       return res
         .status(403)
         .send({ status: "error", message: "You don't have permissions" });
