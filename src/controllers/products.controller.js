@@ -117,7 +117,11 @@ export const deleteProduct = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "Product not found" });
 
-    const response = await productsService.deleteProduct(pid);
+    const response = await productsService.deleteProduct(product, req.user);
+    if (!response)
+      return res
+        .status(403)
+        .send({ status: "error", message: "You don't have permissions" });
 
     res.send({ status: "success", message: "Product delete", response });
   } catch (error) {

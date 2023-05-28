@@ -59,11 +59,19 @@ export const addProduct = async (product, user) => {
 export const updateProduct = async (pid, product) =>
   await productRepository.updateProduct(pid, product);
 
-export const deleteProduct = async (pid) => {
-  const response = await productRepository.deleteProduct(pid);
+export const deleteProduct = async (product, user) => {
+  let response = false;
+  if (user.role === "admin") {
+    response = await productRepository.deleteProduct(product._id);
+  }
 
-  const products = await productRepository.getAll();
-  io.emit("realTimeProducts", products);
+  if (product.owner === user.email) {
+    response = await productRepository.deleteProduct(product._id);
+  }
+  if (response) {
+    const products = await productRepository.getAll();
+    io.emit("realTimeProducts", products);
+  }
   return response;
 };
 
