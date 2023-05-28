@@ -13,7 +13,7 @@ router.get("/:pid", productsController.getProduct);
 router.post(
   "/",
   passportCall("jwt"),
-  authorization("admin"),
+  authorization("admin", "premium"),
   productsController.addProduct
 );
 

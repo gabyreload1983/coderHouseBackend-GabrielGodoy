@@ -44,7 +44,11 @@ export const getProduct = async (pid) =>
 export const getProductByCode = async (code) =>
   await productRepository.getProductByCode(code);
 
-export const addProduct = async (product) => {
+export const addProduct = async (product, user) => {
+  if (user.role === "premium") {
+    product.owner = user.email;
+  }
+
   const response = await productRepository.addProduct(product);
 
   const products = await productRepository.getAll();
