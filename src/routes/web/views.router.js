@@ -20,7 +20,7 @@ router.get(
 router.get(
   "/chat",
   passportCall("jwt"),
-  authorization("user"),
+  authorization("user", "premium"),
   viewController.chat
 );
 
