@@ -72,6 +72,9 @@ export const updateProduct = async (product, newProduct, user) => {
   return response;
 };
 
+export const updateProductCheckout = async (pid, newProduct) =>
+  await productRepository.updateProduct(pid, newProduct);
+
 export const deleteProduct = async (product, user) => {
   let response = false;
   if (user.role === "admin") {

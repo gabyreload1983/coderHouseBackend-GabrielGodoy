@@ -56,7 +56,7 @@ export const purchase = async (cart, email) => {
     if (productDB.stock >= quantity) {
       ticket.amount += productDB.price * quantity;
       productDB.stock = productDB.stock - quantity;
-      await productsService.updateProduct(pid, productDB);
+      await productsService.updateProductCheckout(pid, productDB);
 
       cart.products = cart.products.filter(
         (p) => p.product._id.toString() !== pid
