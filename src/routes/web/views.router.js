@@ -65,4 +65,10 @@ router.get(
   viewController.updateRole
 );
 
+router.get(
+  "/mocking-products",
+  passport.authenticate("jwt", { session: false }),
+  viewController.mockingProducts
+);
+
 export default router;

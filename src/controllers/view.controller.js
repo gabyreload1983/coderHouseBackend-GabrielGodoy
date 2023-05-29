@@ -157,3 +157,17 @@ export const updateRole = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+export const mockingProducts = async (req, res) => {
+  try {
+    const response = await productsService.getMockingProducts(100);
+
+    res.render("mockingProducts", {
+      user: req.user,
+      response,
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
+};
