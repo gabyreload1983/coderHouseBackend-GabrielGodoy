@@ -14,6 +14,7 @@ router.get(
 router.get(
   "/realtimeproducts",
   passport.authenticate("jwt", { session: false }),
+  authorization("admin", "premium"),
   viewController.realTimeProducts
 );
 
@@ -39,6 +40,7 @@ router.get(
 router.get(
   "/carts/:cid",
   passport.authenticate("jwt", { session: false }),
+  authorization("user", "premium"),
   viewController.cart
 );
 
