@@ -58,4 +58,11 @@ router.get("/send-email-reset-password", viewController.sendEmailResetPassword);
 
 router.get("/reset-password", viewController.resetPassword);
 
+router.get(
+  "/update-role",
+  passport.authenticate("jwt", { session: false }),
+  authorization("admin"),
+  viewController.updateRole
+);
+
 export default router;
