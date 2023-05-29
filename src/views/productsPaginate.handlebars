@@ -34,10 +34,18 @@
                     >Detalle</button></a>
                 </td>
                 <td>
+                {{#if ../user.isUser}}
                   <button
                     class="btn btn-success"
                     onclick="addToCart('{{../user.cart}}','{{this._id}}')"
                   >Agregar a carrito</button>
+                {{/if}}
+                 {{#if ../user.isPremium}}
+                  <button
+                    class="btn btn-success"
+                    onclick="addToCart('{{../user.cart}}','{{this._id}}')"
+                  >Agregar a carrito</button>
+                {{/if}}
                 </td>
               </tr>
             {{/each}}
