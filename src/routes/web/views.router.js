@@ -19,7 +19,7 @@ router.get(
 
 router.get(
   "/chat",
-  passportCall("jwt"),
+  passport.authenticate("jwt", { session: false }),
   authorization("user", "premium"),
   viewController.chat
 );
