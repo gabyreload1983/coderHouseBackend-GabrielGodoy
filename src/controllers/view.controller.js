@@ -81,6 +81,11 @@ export const cart = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "Cart id not found" });
 
+    if (cart._id.toString() !== req.user.cart)
+      return res
+        .status(403)
+        .send({ status: "error", message: "You don't have permissions" });
+
     res.render("cart", { ...cart, user: req.user });
   } catch (error) {
     logger.error(error.message);
@@ -136,6 +141,17 @@ export const resetPassword = async (req, res) => {
     if (!isValidUrl) return res.render("sendEmailResetPassword");
 
     res.render("resetPassword");
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
+};
+
+export const updateRole = async (req, res) => {
+  try {
+    res.render("updateRole", {
+      user: req.user,
+    });
   } catch (error) {
     logger.error(error.message);
     res.status(500).send(error);
