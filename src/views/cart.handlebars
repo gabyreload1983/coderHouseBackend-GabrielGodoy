@@ -10,6 +10,7 @@
               <th scope="col">category</th>
               <th scope="col">quantity</th>
               <th scope="col">price</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -19,6 +20,12 @@
                 <td>{{this.product.category}}</td>
                 <td>{{this.quantity}}</td>
                 <td>${{this.product.price}}</td>
+                <td>
+                  <button
+                    class="btn btn-danger"
+                    onclick="(()=> removeItem('{{../_id}}','{{this.product._id}}'))()"
+                  >X</button>
+                </td>
               </tr>
             {{/each}}
           </tbody>
