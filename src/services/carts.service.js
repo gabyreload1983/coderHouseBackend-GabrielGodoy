@@ -3,7 +3,8 @@ import { cartsManager } from "../dao/index.js";
 import CartsRepository from "../repository/carts.repository.js";
 import * as productsService from "./products.service.js";
 import * as ticketsService from "./tickets.service.js";
-import { transporter } from "../utils.js";
+import { purchaseHtml } from "../utils/htmlTemplates.js";
+import { sendEmail } from "./email.service.js";
 
 const cartRepository = new CartsRepository(cartsManager);
 
@@ -78,17 +79,9 @@ export const purchase = async (cart, email) => {
 
   if (ticket.amount) {
     cart.ticket = await ticketsService.createTicket(ticket);
-    await transporter.sendMail({
-      from: "Ecommerce<ecommercecoderhouse@gmail.com>",
-      to: email,
-      subject: "Compra Web",
-      html: `
-      <div>
-        <h1>Muchas gracias por tu compra.</h1>
-        <p>El codigo de tu compra es: ${cart.ticket.code}</p>
-        <strong>Saludos coordiales.</strong>
-      </div>`,
-    });
+
+    const html = purchaseHtml(cart.ticket.code);
+    await sendEmail(email, "Web purchase", html);
   }
 
   return cart;

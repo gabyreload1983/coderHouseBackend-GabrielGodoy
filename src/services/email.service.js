@@ -10,12 +10,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (email, attachments = []) => {
+export const sendEmail = async (to, subject, html, attachments = []) => {
   await transporter.sendMail({
     from: "Ecommerce<ecommercecoderhouse@gmail.com>",
-    to: email.to,
-    subject: email.subject,
-    html: email.html,
+    to,
+    subject,
+    html,
     attachments,
   });
 };

@@ -7,6 +7,7 @@ import { isAdmin } from "../lib/validators/validator.js";
 import { createHash, generateToken, validatePassword } from "../utils.js";
 import { sendEmail } from "./email.service.js";
 import config from "../config/config.js";
+import { resetPasswordHtml } from "../utils/htmlTemplates.js";
 
 const cartRepository = new CartsRepository(cartsManager);
 const userRepository = new UsersRepository(usersManager);
@@ -67,19 +68,9 @@ export const sendEmailResetPassword = async (user) => {
   user.resetPasswordDate = expirationDate;
   await userRepository.update(user.email, user);
 
-  const html = `
-  <h1>Reset password</h1>
-    <p>To reset your password, go to the following <a href="http://localhost:8080/reset-password?id=${user._id}">link</a></p>
-    <p>This link is valid for 1 hour</p>
-  `;
+  const html = resetPasswordHtml(user._id);
 
-  const dataEmail = {
-    to: user.email,
-    subject: "Ecommerce - Reset Password",
-    html,
-  };
-
-  await sendEmail(dataEmail);
+  await sendEmail(user.email, "Ecommerce - Reset Password", html);
 };
 
 export const validateUrlExpiration = async (id) => {
