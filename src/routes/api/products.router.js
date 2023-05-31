@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as productsController from "../../controllers/products.controller.js";
-import { authorization, passportCall } from "../../utils.js";
+import { authorization } from "../../utils.js";
 
 const router = Router();
 
@@ -12,21 +12,18 @@ router.get("/:pid", productsController.getProduct);
 
 router.post(
   "/",
-  passportCall("jwt"),
   authorization("admin", "premium"),
   productsController.addProduct
 );
 
 router.put(
   "/:pid",
-  passportCall("jwt"),
   authorization("admin", "premium"),
   productsController.updateProduct
 );
 
 router.delete(
   "/:pid",
-  passportCall("jwt"),
   authorization("admin", "premium"),
   productsController.deleteProduct
 );

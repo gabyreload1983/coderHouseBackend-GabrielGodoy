@@ -23,12 +23,6 @@ const initializePassport = () => {
           if (!jwt_payload.user)
             return done(null, false, { messages: "Invalid credentials!" });
 
-          if (jwt_payload.user.role === "admin")
-            jwt_payload.user.isAdmin = true;
-          if (jwt_payload.user.role === "premium")
-            jwt_payload.user.isPremium = true;
-          if (jwt_payload.user.role === "user") jwt_payload.user.isUser = true;
-
           return done(null, jwt_payload.user);
         } catch (error) {
           return done(error);

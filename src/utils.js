@@ -26,6 +26,11 @@ export const passportCall = (strategy) => {
       }
 
       req.user = new UsersDto(user);
+
+      if (req.user.role === "admin") req.user.isAdmin = true;
+      if (req.user.role === "premium") req.user.isPremium = true;
+      if (req.user.role === "user") req.user.isUser = true;
+
       next();
     })(req, res, next);
   };

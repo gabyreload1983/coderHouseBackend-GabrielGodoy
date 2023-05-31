@@ -13,62 +13,53 @@ router.get(
 
 router.get(
   "/realtimeproducts",
-  passport.authenticate("jwt", { session: false }),
+  passportCall("jwt"),
   authorization("admin", "premium"),
   viewController.realTimeProducts
 );
 
 router.get(
   "/chat",
-  passport.authenticate("jwt", { session: false }),
+  passportCall("jwt"),
   authorization("user", "premium"),
   viewController.chat
 );
 
-router.get(
-  "/products/",
-  passport.authenticate("jwt", { session: false }),
-  viewController.productsPaginate
-);
+router.get("/products/", passportCall("jwt"), viewController.productsPaginate);
 
 router.get(
   "/products/:pid",
-  passport.authenticate("jwt", { session: false }),
+  passportCall("jwt"),
   viewController.productsDetail
 );
 
 router.get(
   "/carts/:cid",
-  passport.authenticate("jwt", { session: false }),
+  passportCall("jwt"),
   authorization("user", "premium"),
   viewController.cart
 );
 
-router.get("/register", viewController.register);
-
-router.get("/login", viewController.login);
-
-router.get(
-  "/profile",
-  passport.authenticate("jwt", { session: false }),
-  viewController.profile
-);
-
-router.get("/send-email-reset-password", viewController.sendEmailResetPassword);
-
-router.get("/reset-password", viewController.resetPassword);
-
 router.get(
   "/update-role",
-  passport.authenticate("jwt", { session: false }),
+  passportCall("jwt"),
   authorization("admin"),
   viewController.updateRole
 );
 
 router.get(
   "/mocking-products",
-  passport.authenticate("jwt", { session: false }),
+  passportCall("jwt"),
   viewController.mockingProducts
 );
+
+router.get("/profile", passportCall("jwt"), viewController.profile);
+
+// publics router
+
+router.get("/register", viewController.register);
+router.get("/login", viewController.login);
+router.get("/send-email-reset-password", viewController.sendEmailResetPassword);
+router.get("/reset-password", viewController.resetPassword);
 
 export default router;
