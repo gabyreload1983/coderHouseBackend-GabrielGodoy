@@ -177,6 +177,11 @@ export const deleteAllProducts = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "cart not found" });
 
+    if (req.user.cart !== cid)
+      return res
+        .status(403)
+        .send({ status: "error", message: "You don't have permissions" });
+
     const response = await cartsService.deleteAllProducts(cart);
 
     res.send({
@@ -185,7 +190,7 @@ export const deleteAllProducts = async (req, res) => {
       response,
     });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send({ error });
   }
 };
@@ -201,6 +206,11 @@ export const purchase = async (req, res) => {
       return res
         .status(404)
         .send({ status: "error", message: "cart not found" });
+
+    if (req.user.cart !== cid)
+      return res
+        .status(403)
+        .send({ status: "error", message: "You don't have permissions" });
 
     const result = await cartsService.purchase(cart, req.user.email);
     if (result.products.length === 0)
