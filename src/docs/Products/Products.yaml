@@ -1,0 +1,267 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los productos paginados
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Los productos fueron obtenidos satisfactoriamente de la base de datos
+          content:
+            appplication/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Product"
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo de conexión a la base de datos
+    post:
+      summary: Agregar un producto a partir de su pid
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/postProduct"
+      responses:
+        "200":
+          description: El producto fue agregado satisfactoriamente en la base de datos
+        "400":
+          description: Error valores incompletos o el producto ya fue registrado
+          content:
+            appplication/json:
+              schema:
+                oneOf:
+                  - $ref: "#components/responseBodies/postProductIncompleteValues"
+                  - $ref: "#components/responseBodies/postProductCodeAlreadyExists"
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo de conexión a la base de datos
+  /api/products/mocking-products:
+    get:
+      summary: Obtiene 100 productos generados por la libreria faker-js.
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Los productos fueron obtenidos satisfactoriamente
+          content:
+            appplication/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Product"
+        "500":
+          description: Error interno del servidor
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un solo producto a partir de su pid
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue obtenido satisfactoriamente de la base de datos
+          content:
+            appplication/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo de conexión a la base de datos
+    put:
+      summary: Actualizar el producto a partir de su pid
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
+      responses:
+        "200":
+          description: El producto fue actualizado satisfactoriamente en la base de datos
+        "400":
+          description: El id del producto es incorrecto
+        "404":
+          description: El producto no fue encontrado en la base de datos
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo de conexión a la base de datos
+    delete:
+      summary: Eliminar el producto a partir de su pid
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue eliminado satisfactoriamente en la base de datos
+        "400":
+          description: El id del producto es incorrecto
+        "404":
+          description: El producto no fue encontrado en la base de datos
+        "403":
+          description: El usuario no tiene permisos para eliminar el producto
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo de conexión a la base de datos
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mongodb
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        code:
+          type: String
+          description: Codigo del producto
+        price:
+          type: Number
+          description: Precio del producto
+        status:
+          type: String
+          description: Estado del producto
+        stock:
+          type: String
+          description: Stock diponible del producto
+        category:
+          type: String
+          description: Categoria del producto
+        thumbnail:
+          type: Array
+          description: URLs de las imagenes del producto
+        owner:
+          type: String
+          description: Email del usuario que creo el producto
+      example:
+        _id: 6418385b16ffae70c2891a49
+        title: Elegant Wooden Gloves
+        price: 407
+        description: New range of formal shirts are designed keeping you in mind.
+        code: a111
+        status: true
+        stock: 3
+        thumbnail: ["https://some-url.com", "https://some-url2.com"]
+        category: Furniture
+        owner: admin
+  requestBodies:
+    updateProduct:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mongodb
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        code:
+          type: String
+          description: Codigo del producto
+        price:
+          type: Number
+          description: Precio del producto
+        status:
+          type: String
+          description: Estado del producto
+        stock:
+          type: String
+          description: Stock diponible del producto
+        category:
+          type: String
+          description: Categoria del producto
+        thumbnail:
+          type: Array
+          description: URLs de las imagenes del producto
+      example:
+        title: Elegant Wooden Gloves
+        price: 407
+        description: New range of formal shirts are designed keeping you in mind.
+        code: a111
+        status: true
+        stock: 3
+        thumbnail: ["https://some-url.com", "https://some-url2.com"]
+        category: Furniture
+    postProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        code:
+          type: String
+          description: Codigo del producto
+        price:
+          type: Number
+          description: Precio del producto
+        status:
+          type: String
+          description: Estado del producto
+        stock:
+          type: String
+          description: Stock diponible del producto
+        category:
+          type: String
+          description: Categoria del producto
+      example:
+        title: Elegant Wooden Gloves
+        price: 407
+        description: New range of formal shirts are designed keeping you in mind.
+        code: a111
+        stock: 3
+        category: Furniture
+  responseBodies:
+    postProductIncompleteValues:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la petición
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: Incomplete values
+    postProductCodeAlreadyExists:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la petición
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: Product already exists
