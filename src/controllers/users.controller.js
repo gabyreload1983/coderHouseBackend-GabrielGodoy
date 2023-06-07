@@ -176,3 +176,14 @@ export const updateRole = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await userService.getUsers();
+
+    res.send({ status: "success", users });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
+};
