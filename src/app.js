@@ -38,8 +38,8 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.1",
     info: {
-      title: "Documentación del proyecto Ecommerce de CoderHouse",
-      description: "API Ecommerce - Proyecto Final Comisión 44985",
+      title: "CoderHouse Final Project Documentation",
+      description: "API Ecommerce - Commission 44985",
     },
   },
   apis: [`${__dirname}/docs/**/*.yaml`],
