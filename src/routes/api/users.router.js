@@ -42,4 +42,11 @@ router.post(
   usersController.updateRole
 );
 
+router.get(
+  "/",
+  passportCall("jwt"),
+  authorization("admin"),
+  usersController.getUsers
+);
+
 export default router;
