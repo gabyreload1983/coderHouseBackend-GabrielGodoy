@@ -49,4 +49,11 @@ router.get(
   usersController.getUsers
 );
 
+router.delete(
+  "/:uid",
+  passportCall("jwt"),
+  authorization("admin"),
+  usersController.deleteUser
+);
+
 export default router;

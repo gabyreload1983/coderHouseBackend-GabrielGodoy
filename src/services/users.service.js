@@ -99,3 +99,5 @@ export const getUsers = async () => {
   const users = await userRepository.getUsers();
   return users.filter((u) => u.email !== config.admin_email);
 };
+
+export const deleteUser = async (uid) => await userRepository.delete(uid);
