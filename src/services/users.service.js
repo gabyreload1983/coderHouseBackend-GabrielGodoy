@@ -13,9 +13,9 @@ const cartRepository = new CartsRepository(cartsManager);
 const userRepository = new UsersRepository(usersManager);
 
 export const getUserByEmail = async (email) =>
-  userRepository.findByEmail(email);
+  await userRepository.findByEmail(email);
 
-export const getUserById = async (id) => userRepository.findById(id);
+export const getUserById = async (id) => await userRepository.findById(id);
 
 export const register = async (
   first_name,
@@ -91,8 +91,9 @@ export const resetPassword = async (id, password) => {
 };
 
 export const updateRole = async (user, role) => {
+  if (user.documents.length !== 3 && role === "premium") return null;
   user.role = role;
-  await userRepository.update(user.email, user);
+  return await userRepository.update(user.email, user);
 };
 
 export const getUsers = async () => {
@@ -101,3 +102,12 @@ export const getUsers = async () => {
 };
 
 export const deleteUser = async (uid) => await userRepository.delete(uid);
+
+export const documents = async (user, newUser) => {
+  newUser.documents.forEach((docNewUser) => {
+    if (!user.documents.some((doc) => doc.name === docNewUser.name))
+      user.documents.push(docNewUser);
+  });
+
+  return await userRepository.update(user.email, user);
+};

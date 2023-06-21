@@ -6,6 +6,8 @@ import passport from "passport";
 import nodemailer from "nodemailer";
 import config from "./config/config.js";
 import UsersDto from "./dao/DTOs/users.dto.js";
+import multer from "multer";
+import logger from "./logger/logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -60,3 +62,34 @@ export const transporter = nodemailer.createTransport({
     pass: config.gmail_pass,
   },
 });
+
+export const storageDocuments = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const path = `${__dirname}/files/documents`;
+    const extension = file.mimetype.split("/")[1];
+    const fileName = `${req.user._id}-${file.fieldname}.${extension}`;
+    req.user.documents.push({
+      name: file.fieldname,
+      reference: `${path}/${fileName}`,
+    });
+
+    cb(null, path);
+  },
+  filename: (req, file, cb) => {
+    const extension = file.mimetype.split("/")[1];
+    const fileName = `${req.user._id}-${file.fieldname}.${extension}`;
+    cb(null, fileName);
+  },
+});
+
+export const uploader = (storage) =>
+  multer({
+    storage,
+    onError: (err, next) => {
+      if (err) {
+        logger.error(err.message);
+        next(err);
+      }
+      next();
+    },
+  });

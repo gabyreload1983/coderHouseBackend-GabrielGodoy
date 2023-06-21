@@ -40,7 +40,7 @@ export const register = async (req, res) => {
       id: response._id,
     });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
@@ -76,7 +76,7 @@ export const login = async (req, res) => {
       })
       .send({ status: "success", message: "login success" });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
@@ -125,7 +125,7 @@ export const githubCallback = async (req, res) => {
       })
       .redirect("/products");
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
@@ -172,9 +172,17 @@ export const updateRole = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "User not found" });
 
-    await userService.updateRole(user, role);
+    const result = await userService.updateRole(user, role);
+    if (!result)
+      return res
+        .status(400)
+        .send({ status: "error", message: "Can not update role" });
 
-    res.send({ status: "success", message: "User update successfully" });
+    res.send({
+      status: "success",
+      message: "User update successfully.",
+      result,
+    });
   } catch (error) {
     logger.error(error.message);
     res.status(500).send(error);
@@ -203,6 +211,36 @@ export const deleteUser = async (req, res) => {
     res.send({
       status: "success",
       message: "User deleted successfully",
+      result,
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
+};
+
+export const documents = async (req, res) => {
+  try {
+    if (!Object.keys(req.files).length)
+      return res
+        .status(400)
+        .send({ status: "error", message: "You must send at least one file" });
+
+    const { uid } = req.params;
+    if (isInvalidId(uid))
+      return res.status(400).send({ status: "error", message: "Invalid id" });
+
+    const user = await userService.getUserById(uid);
+    if (!user)
+      return res
+        .status(404)
+        .send({ status: "error", message: "User not found" });
+
+    const result = await userService.documents(user, req.user);
+
+    res.send({
+      status: "success",
+      message: "Load file success",
       result,
     });
   } catch (error) {
