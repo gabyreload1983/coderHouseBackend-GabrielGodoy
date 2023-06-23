@@ -37,6 +37,8 @@ export const register = async (
 };
 
 export const login = async (user, password) => {
+  user.last_connection = moment().format();
+  await userRepository.update(user.email, user);
   user = await userRepository.login(user);
 
   if (!user.cart) {
@@ -50,6 +52,12 @@ export const login = async (user, password) => {
   }
 
   return user;
+};
+
+export const logout = async (user) => {
+  user = await userRepository.findById(user._id);
+  user.last_connection = moment().format();
+  return await userRepository.update(user.email, user);
 };
 
 export const githubCallback = async (user) => {
@@ -91,7 +99,12 @@ export const resetPassword = async (id, password) => {
 };
 
 export const updateRole = async (user, role) => {
-  if (user.documents.length !== 3 && role === "premium") return null;
+  if (
+    user.documents.length !== Number(config.number_of_documents) &&
+    role === "premium"
+  )
+    return null;
+
   user.role = role;
   return await userRepository.update(user.email, user);
 };

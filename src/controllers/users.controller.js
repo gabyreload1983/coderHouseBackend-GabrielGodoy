@@ -81,9 +81,16 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
-  res.clearCookie("coderCookieToken");
-  res.redirect("/login");
+export const logout = async (req, res) => {
+  try {
+    await userService.logout(req.user);
+
+    res.clearCookie("coderCookieToken");
+    res.redirect("/login");
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send(error);
+  }
 };
 
 export const sendEmailResetPassword = async (req, res) => {
@@ -174,9 +181,10 @@ export const updateRole = async (req, res) => {
 
     const result = await userService.updateRole(user, role);
     if (!result)
-      return res
-        .status(400)
-        .send({ status: "error", message: "Can not update role" });
+      return res.status(400).send({
+        status: "error",
+        message: "Can not update role. Missing upload files",
+      });
 
     res.send({
       status: "success",
@@ -237,7 +245,6 @@ export const documents = async (req, res) => {
         .send({ status: "error", message: "User not found" });
 
     const result = await userService.documents(user, req.user);
-
     res.send({
       status: "success",
       message: "Load file success",

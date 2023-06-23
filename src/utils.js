@@ -65,7 +65,7 @@ export const transporter = nodemailer.createTransport({
 
 export const storageDocuments = multer.diskStorage({
   destination: (req, file, cb) => {
-    const path = `${__dirname}/files/documents`;
+    const path = `${__dirname}/public/documents`;
     const extension = file.mimetype.split("/")[1];
     const fileName = `${req.user._id}-${file.fieldname}.${extension}`;
     req.user.documents.push({

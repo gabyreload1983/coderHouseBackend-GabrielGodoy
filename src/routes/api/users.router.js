@@ -14,7 +14,7 @@ router.post("/register", usersController.register);
 
 router.post("/login", usersController.login);
 
-router.get("/logout", usersController.logout);
+router.get("/logout", passportCall("jwt"), usersController.logout);
 
 router.post(
   "/send-email-reset-password",
