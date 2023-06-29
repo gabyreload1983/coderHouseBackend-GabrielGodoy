@@ -229,14 +229,19 @@ export const deleteUser = async (req, res) => {
 
 export const documents = async (req, res) => {
   try {
-    if (!Object.keys(req.files).length)
+    const { storage, pid } = req.query;
+    const { uid } = req.params;
+
+    if (!req.files)
+      return res.status(400).send({
+        status: "error",
+        message: "Error, you must send at least one file",
+      });
+
+    if (isInvalidId(uid))
       return res
         .status(400)
-        .send({ status: "error", message: "You must send at least one file" });
-
-    const { uid } = req.params;
-    if (isInvalidId(uid))
-      return res.status(400).send({ status: "error", message: "Invalid id" });
+        .send({ status: "error", message: "Invalid user id" });
 
     const user = await userService.getUserById(uid);
     if (!user)
@@ -244,7 +249,32 @@ export const documents = async (req, res) => {
         .status(404)
         .send({ status: "error", message: "User not found" });
 
-    const result = await userService.documents(user, req.user);
+    let result;
+    if (storage === "documents") {
+      result = await userService.saveDocuments(user, req.files);
+    }
+
+    if (storage === "profile") {
+      return res.send({
+        status: "success",
+        message: "Load profile file success",
+        result,
+      });
+    }
+
+    if (storage === "products" && pid) {
+      result = await userService.saveProductsPhotos(pid, req.files.products);
+      if (!result)
+        return res
+          .status(404)
+          .send({ status: "error", message: "Product not found" });
+    }
+
+    if (!result)
+      return res
+        .status(400)
+        .send({ status: "error", message: "Error saving documents" });
+
     res.send({
       status: "success",
       message: "Load file success",

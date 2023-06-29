@@ -68,6 +68,9 @@ router.post(
     { name: "identification", maxCount: 1 },
     { name: "address", maxCount: 1 },
     { name: "statusCount", maxCount: 1 },
+    { name: "profile", maxCount: 1 },
+    { name: "products", maxCount: 4 },
+    { name: "pid", maxCount: 1 },
   ]),
   usersController.documents
 );

@@ -8,6 +8,7 @@ import { createHash, generateToken, validatePassword } from "../utils.js";
 import { sendEmail } from "./email.service.js";
 import config from "../config/config.js";
 import { resetPasswordHtml } from "../utils/htmlTemplates.js";
+import * as productsService from "../services/products.service.js";
 
 const cartRepository = new CartsRepository(cartsManager);
 const userRepository = new UsersRepository(usersManager);
@@ -116,11 +117,33 @@ export const getUsers = async () => {
 
 export const deleteUser = async (uid) => await userRepository.delete(uid);
 
-export const documents = async (user, newUser) => {
-  newUser.documents.forEach((docNewUser) => {
-    if (!user.documents.some((doc) => doc.name === docNewUser.name))
-      user.documents.push(docNewUser);
+export const saveDocuments = async (user, files) => {
+  const docs = ["identification", "address", "statusCount"];
+
+  const newFiles = [];
+  docs.forEach((doc) => {
+    if (files[doc]) newFiles.push(files[doc][0]);
+  });
+
+  newFiles.forEach((file) => {
+    if (!user.documents.some((doc) => doc.name === file.fieldname))
+      user.documents.push({
+        name: file.fieldname,
+        reference: `/documents/${user._id}/${file.filename}`,
+      });
   });
 
   return await userRepository.update(user.email, user);
+};
+
+export const saveProductsPhotos = async (pid, files) => {
+  const product = await productsService.getProduct(pid);
+  if (!product) {
+    await productsService.deleteInvalidThumbnail(files);
+    return res
+      .status(404)
+      .send({ status: "error", message: "Product not found" });
+  }
+
+  return await productsService.updateThumbnail(product, files);
 };

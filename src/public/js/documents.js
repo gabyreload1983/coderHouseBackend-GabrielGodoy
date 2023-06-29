@@ -10,7 +10,7 @@ const uploadFiles = async (id) => {
   formData.append("address", address.files[0]);
   formData.append("statusCount", statusCount.files[0]);
 
-  const data = await fetch(`/api/users/${id}/documents`, {
+  const data = await fetch(`/api/users/${id}/documents?storage=documents`, {
     method: "POST",
     body: formData,
   });
