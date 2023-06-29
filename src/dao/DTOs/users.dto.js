@@ -9,6 +9,7 @@ export default class UsersDto {
     this.role = user.role;
     this.last_connection = user.last_connection;
     this.documents = user.documents;
+    this.profile = user.profile;
   }
 
   static formatGitHubUser = (user) => {

@@ -232,7 +232,7 @@ export const documents = async (req, res) => {
     const { storage, pid } = req.query;
     const { uid } = req.params;
 
-    if (!req.files)
+    if (!Object.keys(req.files).length)
       return res.status(400).send({
         status: "error",
         message: "Error, you must send at least one file",
@@ -255,11 +255,7 @@ export const documents = async (req, res) => {
     }
 
     if (storage === "profile") {
-      return res.send({
-        status: "success",
-        message: "Load profile file success",
-        result,
-      });
+      result = await userService.saveUserProfile(user, req.files["profile"][0]);
     }
 
     if (storage === "products" && pid) {

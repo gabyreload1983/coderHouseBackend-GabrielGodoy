@@ -136,6 +136,12 @@ export const saveDocuments = async (user, files) => {
   return await userRepository.update(user.email, user);
 };
 
+export const saveUserProfile = async (user, file) => {
+  if (!user.profile) user.profile = `/profiles/${file.filename}`;
+
+  return await userRepository.update(user.email, user);
+};
+
 export const saveProductsPhotos = async (pid, files) => {
   const product = await productsService.getProduct(pid);
   if (!product) {

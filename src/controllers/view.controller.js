@@ -113,6 +113,9 @@ export const login = async (req, res) => {
 
 export const profile = async (req, res) => {
   try {
+    const user = await usersService.getUserByEmail(req.user.email);
+    req.user.profile = user.profile;
+
     res.render("profile", {
       user: req.user,
     });

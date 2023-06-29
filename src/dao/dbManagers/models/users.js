@@ -29,6 +29,9 @@ const usersSchema = new mongoose.Schema({
     ],
     default: [],
   },
+  profile: {
+    type: String,
+  },
   last_connection: {
     type: Date,
   },
