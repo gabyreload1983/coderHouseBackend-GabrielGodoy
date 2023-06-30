@@ -21,6 +21,9 @@ export default class UsersDto {
       age: "",
       cart: "",
       password: "",
+      last_connection: new Date(),
+      documents: [],
+      profile: user.avatar_url,
     };
   };
 }
