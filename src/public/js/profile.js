@@ -1,5 +1,10 @@
 const imgProfile = document.querySelector("#imgProfile");
 const profile = document.querySelector("#profile");
+const lastConnection = document.querySelector("#lastConnection");
+
+lastConnection.innerHTML = moment(lastConnection.innerHTML).format(
+  "DD MM YYYY - h:mm:ss a"
+);
 
 imgProfile.addEventListener("error", (e) => {
   e.target.src = "https://cdn-icons-png.flaticon.com/512/21/21104.png";
