@@ -3,3 +3,7 @@ package-lock.json
 .vscode
 .env
 /src/logger/logs/*.log
+/src/public/documents/*
+/src/public/products/*
+/src/public/profiles/*
+/src/public/temp/*
