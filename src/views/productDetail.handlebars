@@ -6,12 +6,12 @@
         <thead>
           <tr>
             <th scope="col">Title</th>
-            <th scope="col">description</th>
-            <th scope="col">code</th>
-            <th scope="col">price</th>
-            <th scope="col">status</th>
-            <th scope="col">stock</th>
-            <th scope="col">category</th>
+            <th scope="col">Description</th>
+            <th scope="col">Code</th>
+            <th scope="col">Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Category</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -29,13 +29,13 @@
                 <button
                   class="btn btn-success"
                   onclick="addToCart('{{user.cart}}','{{_id}}')"
-                >Agregar a carrito</button>
+                >Add To Cart</button>
               {{/if}}
               {{#if user.isPremium}}
                 <button
                   class="btn btn-success"
                   onclick="addToCart('{{user.cart}}','{{_id}}')"
-                >Agregar a carrito</button>
+                >Add to Cart</button>
               {{/if}}
             </td>
           </tr>
