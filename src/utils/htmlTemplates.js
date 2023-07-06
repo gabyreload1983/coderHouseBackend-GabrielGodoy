@@ -23,3 +23,14 @@ export const userInactive = (user) => {
   <a href="http://localhost:8080/register">Register</a>
     `;
 };
+
+export const productDelete = (product) => {
+  return `
+  <h2>A product you created was deleted.</h2>
+  <p>Product detail:</p>
+  <ul>
+    <li>ID: ${product._id}</li>
+    <li>Title: ${product.title}</li>
+    <li>Description: ${product.description}</li>
+  </ul>`;
+};

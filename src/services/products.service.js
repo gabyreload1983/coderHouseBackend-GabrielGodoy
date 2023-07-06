@@ -4,6 +4,8 @@ import ProductsRepository from "../repository/products.repository.js";
 import { generateProduct } from "../mocking/products.mock.js";
 import fs from "fs";
 import logger from "../logger/logger.js";
+import { sendEmail } from "./email.service.js";
+import { productDelete } from "../utils/htmlTemplates.js";
 
 const productRepository = new ProductsRepository(productsManager);
 
@@ -90,6 +92,10 @@ export const deleteProduct = async (product, user) => {
     const products = await productRepository.getAll();
     io.emit("realTimeProducts", products);
   }
+
+  if (response && product.owner !== "admin")
+    await sendEmail(product.owner, "PRODUCT DELETE", productDelete(product));
+
   return response;
 };
 
