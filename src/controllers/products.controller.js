@@ -22,7 +22,7 @@ export const getProductsPaginate = async (req, res) => {
 
     res.send(response);
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
@@ -41,7 +41,7 @@ export const getProduct = async (req, res) => {
 
     res.send({ status: "success", product });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
@@ -78,7 +78,7 @@ export const addProduct = async (req, res, next) => {
 
     res.send({ status: "success", message: "Product added", response });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     next(error);
   }
 };
@@ -109,7 +109,7 @@ export const updateProduct = async (req, res) => {
 
     res.send({ status: "success", message: "Product update", response });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
@@ -134,7 +134,7 @@ export const deleteProduct = async (req, res) => {
 
     res.send({ status: "success", message: "Product delete", response });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send(error);
   }
 };
