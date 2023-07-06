@@ -212,7 +212,7 @@ export const purchase = async (req, res) => {
         .status(403)
         .send({ status: "error", message: "You don't have permissions" });
 
-    const result = await cartsService.purchase(cart, req.user.email);
+    const result = await cartsService.purchase(cart, req.user);
     if (result.products.length === 0)
       return res.send({
         status: "success",
@@ -234,7 +234,7 @@ export const purchase = async (req, res) => {
       result,
     });
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     res.status(500).send({ error });
   }
 };
