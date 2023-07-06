@@ -11,11 +11,10 @@ socket.on("realTimeProducts", (data) => {
   data.forEach((p) => {
     products += `
     <tr>
-      <td>${p._id}</td>
       <td>${p.title}</td>
-      <td>${p.description}</td>
       <td>${p.code}</td>
-      <td>${p.price}</td>
+      <td>$${p.price}</td>
+      <td>${p.stock}</td>
       <td>${p.status}</td>
       <td>${p.category}</td>
       <td>${p.owner}</td>
@@ -48,7 +47,7 @@ addProduct.addEventListener("click", async (e) => {
     stock: formAddProduct.stock.value,
     category: formAddProduct.category.value,
   };
-  const response = await fetch("http://localhost:8080/api/products", {
+  const response = await fetch("/api/products", {
     method: "POST",
     body: JSON.stringify(product),
     headers: {
@@ -80,7 +79,7 @@ addProduct.addEventListener("click", async (e) => {
 });
 
 const deleteProduct = async (id) => {
-  const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+  const response = await fetch(`/api/products/${id}`, {
     method: "DELETE",
   });
   const json = await response.json();

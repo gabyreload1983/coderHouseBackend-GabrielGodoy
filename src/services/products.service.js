@@ -24,12 +24,12 @@ export const getProductsPaginate = async (limit, page, query, sort) => {
 
   response.status = "success";
   response.prevLink = response.hasPrevPage
-    ? `http://localhost:8080/products?limit=${limit}&page=${response.prevPage}${
+    ? `/products?limit=${limit}&page=${response.prevPage}${
         query ? `&query=${query}` : ""
       }${sort ? `&sort=${sort.price}` : ""}`
     : null;
   response.nextLink = response.hasNextPage
-    ? `http://localhost:8080/products?limit=${limit}&page=${response.nextPage}${
+    ? `/products?limit=${limit}&page=${response.nextPage}${
         query ? `&query=${query}` : ""
       }${sort ? `&sort=${sort.price}` : ""}`
     : null;
