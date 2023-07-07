@@ -39,7 +39,7 @@ export const purchaseHtml = (user, cart) => {
 export const resetPasswordHtml = (uid) => {
   return `
   <h1>Reset password</h1>
-  <p>To reset your password, go to the following <a href="http://localhost:8080/reset-password?id=${uid}">link</a></p>
+  <p>To reset your password, go to the following <a href="${config.host_url}/reset-password?id=${uid}">link</a></p>
   <p>This link is valid for 1 hour</p>
   `;
 };
@@ -49,7 +49,7 @@ export const userInactive = (user) => {
   <h2>Hello ${user.first_name} ${user.last_name}.</h2>
   <p>Your acount was delete for inactivity</p>
   <p>If you want to register again, please go to the next link</p>
-  <a href="http://localhost:8080/register">Register</a>
+  <a href="${config.host_url}/register">Register</a>
     `;
 };
 

@@ -17,4 +17,5 @@ export default {
   reset_password_minutes: process.env.RESET_PASSWORD_MINUTES,
   number_of_documents: process.env.NUMBER_OF_DOCUMENTS,
   minutes_inactives_users: process.env.MINUTES_INACTIVES_USERS,
+  host_url: process.env.HOST_URL,
 };
