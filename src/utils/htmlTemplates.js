@@ -1,3 +1,5 @@
+import config from "../config/config.js";
+
 export const purchaseHtml = (user, cart) => {
   let productsList = "";
   for (const p of cart.products) {
