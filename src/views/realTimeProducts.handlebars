@@ -56,39 +56,37 @@
                 id="category"
               />
             </div>
+
+            <label for="file1" class="form-label text-uppercase">
+              File 1
+            </label>
+            <input
+              class="form-control form-control-sm"
+              type="file"
+              id="file1"
+            />
+            <label for="file2" class="form-label text-uppercase">
+              File 2
+            </label>
+            <input
+              class="form-control form-control-sm"
+              type="file"
+              id="file2"
+            />
+            <label for="file3" class="form-label text-uppercase">
+              File 3
+            </label>
+            <input
+              class="form-control form-control-sm"
+              type="file"
+              id="file3"
+            />
+
             <div class="col-md-6">
               <button class="btn btn-primary" id="addProduct">Add</button>
             </div>
           </form>
 
-        </div>
-        <div class="col-12">
-          <h3>Add Photos to a product</h3>
-          <select id="productSelect" class="form-select form-select-sm">
-            <option value="">Select a product</option>
-            {{#each products}}
-              <option value="{{this._id}}">{{this.title}}
-                -
-                {{this._id}}</option>
-            {{/each}}
-          </select>
-
-          <label for="file1" class="form-label text-uppercase">
-            File 1
-          </label>
-          <input class="form-control form-control-sm" type="file" id="file1" />
-          <label for="file2" class="form-label text-uppercase">
-            File 1
-          </label>
-          <input class="form-control form-control-sm" type="file" id="file2" />
-          <label for="file3" class="form-label text-uppercase">
-            File 1
-          </label>
-          <input class="form-control form-control-sm" type="file" id="file3" />
-          <button
-            class="btn btn-info btn-sm my-3"
-            onclick="uploadProductFiles('{{user._id}}')"
-          >Upload files</button>
         </div>
       </div>
 

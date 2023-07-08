@@ -7,7 +7,6 @@ const productSelect = document.querySelector("#productSelect");
 
 socket.on("realTimeProducts", (data) => {
   let products = "";
-  let selectList = `<option value="">Select a product</option>`;
   data.forEach((p) => {
     products += `
     <tr>
@@ -23,15 +22,8 @@ socket.on("realTimeProducts", (data) => {
         onclick="deleteProduct('${p._id}')"
       >x</button></td>
     </tr>`;
-
-    selectList += `
-    <option value="${p._id}">
-      ${p.title} - ${p._id}
-    </option>
-    `;
   });
   container.innerHTML = products;
-  productSelect.innerHTML = selectList;
 });
 
 const addProduct = document.querySelector("#addProduct");
@@ -39,6 +31,7 @@ const formAddProduct = document.querySelector("#formAddProduct");
 
 addProduct.addEventListener("click", async (e) => {
   e.preventDefault();
+
   const product = {
     title: formAddProduct.title.value,
     description: formAddProduct.description.value,
@@ -55,17 +48,6 @@ addProduct.addEventListener("click", async (e) => {
     },
   });
   const json = await response.json();
-  if (json.status === "success") {
-    formAddProduct.reset();
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-      title: `Producto agregado`,
-      icon: "success",
-    });
-  }
   if (json.status === "error") {
     Swal.fire({
       toast: true,
@@ -75,6 +57,59 @@ addProduct.addEventListener("click", async (e) => {
       title: `${json.message}`,
       icon: "error",
     });
+  }
+  if (json.status === "success") {
+    if (!file1.files.length && !file2.files.length && !file3.files.length) {
+      formAddProduct.reset();
+      return await Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        title: `Producto agregado`,
+        icon: "success",
+      });
+    }
+
+    const formData = new FormData();
+
+    formData.append("products", file1.files[0]);
+    formData.append("products", file2.files[0]);
+    formData.append("products", file3.files[0]);
+
+    const pid = json.response._id;
+    const uid = json.user._id;
+
+    const data = await fetch(
+      `/api/users/${uid}/documents?storage=products&pid=${pid}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const json = await data.json();
+    if (json.status === "success") {
+      formAddProduct.reset();
+      await Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 2000,
+        text: `Producto agregado`,
+        icon: "success",
+      });
+    }
+    if (json.status === "error") {
+      await Swal.fire({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 3000,
+        title: `Error`,
+        text: `${json?.message}`,
+        icon: "error",
+      });
+    }
   }
 });
 
@@ -91,9 +126,6 @@ const deleteProduct = async (id) => {
       timer: 3000,
       title: `Producto borrado`,
       icon: "success",
-      willClose: () => {
-        window.location.reload();
-      },
     });
   }
   if (json.status === "error") {
@@ -103,58 +135,6 @@ const deleteProduct = async (id) => {
       showConfirmButton: false,
       timer: 3000,
       title: `${json.message}`,
-      icon: "error",
-    });
-  }
-};
-
-const uploadProductFiles = async (uid) => {
-  if (!productSelect.value) {
-    return await Swal.fire({
-      toast: true,
-      position: "top",
-      showConfirmButton: false,
-      timer: 3000,
-      title: `Error`,
-      text: `You must select a product!`,
-      icon: "error",
-    });
-  }
-  const formData = new FormData();
-
-  formData.append("products", file1.files[0]);
-  formData.append("products", file2.files[0]);
-  formData.append("products", file3.files[0]);
-
-  const data = await fetch(
-    `/api/users/${uid}/documents?storage=products&pid=${productSelect.value}`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
-  const json = await data.json();
-  if (json.status === "success") {
-    await Swal.fire({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 2000,
-      text: `Uploaded files success!`,
-      icon: "success",
-      willClose: () => {
-        window.location.reload();
-      },
-    });
-  }
-  if (json.status === "error") {
-    await Swal.fire({
-      toast: true,
-      position: "top",
-      showConfirmButton: false,
-      timer: 3000,
-      title: `Error`,
-      text: `${json?.message}`,
       icon: "error",
     });
   }

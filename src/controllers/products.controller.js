@@ -76,7 +76,12 @@ export const addProduct = async (req, res, next) => {
 
     const response = await productsService.addProduct(newProduct, req.user);
 
-    res.send({ status: "success", message: "Product added", response });
+    res.send({
+      status: "success",
+      message: "Product added",
+      response,
+      user: req.user,
+    });
   } catch (error) {
     logger.error(error.message);
     next(error);
