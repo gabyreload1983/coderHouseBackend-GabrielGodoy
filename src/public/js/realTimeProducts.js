@@ -47,18 +47,18 @@ addProduct.addEventListener("click", async (e) => {
       "Content-type": "application/json; charset=UTF-8",
     },
   });
-  const json = await response.json();
-  if (json.status === "error") {
+  const jsonProduct = await response.json();
+  if (jsonProduct.status === "error") {
     Swal.fire({
       toast: true,
       position: "top-end",
       showConfirmButton: false,
       timer: 3000,
-      title: `${json.message}`,
+      title: `${jsonProduct.message}`,
       icon: "error",
     });
   }
-  if (json.status === "success") {
+  if (jsonProduct.status === "success") {
     if (!file1.files.length && !file2.files.length && !file3.files.length) {
       formAddProduct.reset();
       return await Swal.fire({
@@ -77,8 +77,8 @@ addProduct.addEventListener("click", async (e) => {
     formData.append("products", file2.files[0]);
     formData.append("products", file3.files[0]);
 
-    const pid = json.response._id;
-    const uid = json.user._id;
+    const pid = jsonProduct.response._id;
+    const uid = jsonProduct.user._id;
 
     const data = await fetch(
       `/api/users/${uid}/documents?storage=products&pid=${pid}`,
@@ -87,8 +87,8 @@ addProduct.addEventListener("click", async (e) => {
         body: formData,
       }
     );
-    const json = await data.json();
-    if (json.status === "success") {
+    const jsonFiles = await data.json();
+    if (jsonFiles.status === "success") {
       formAddProduct.reset();
       await Swal.fire({
         toast: true,
@@ -99,14 +99,14 @@ addProduct.addEventListener("click", async (e) => {
         icon: "success",
       });
     }
-    if (json.status === "error") {
+    if (jsonFiles.status === "error") {
       await Swal.fire({
         toast: true,
         position: "top",
         showConfirmButton: false,
         timer: 3000,
         title: `Error`,
-        text: `${json?.message}`,
+        text: `${jsonFiles?.message}`,
         icon: "error",
       });
     }
