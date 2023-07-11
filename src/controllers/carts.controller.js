@@ -213,20 +213,19 @@ export const purchase = async (req, res) => {
         .send({ status: "error", message: "You don't have permissions" });
 
     const result = await cartsService.purchase(cart, req.user);
-    if (result.products.length === 0)
+    if (result.products.length === cart.products.length)
       return res.send({
         status: "success",
         message: `Purchase success. We send you an email`,
         result,
       });
 
-    if (result?.ticket) {
+    if (result.products.length > 0)
       return res.send({
         status: "success",
         message: `Purchase success. We send you an email. There is not enough stock of some products. Which were left in the cart. `,
         result,
       });
-    }
 
     res.send({
       status: "error",

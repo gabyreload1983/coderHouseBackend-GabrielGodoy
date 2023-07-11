@@ -62,6 +62,7 @@ export const purchase = async (cart, user) => {
   };
 
   const cartRest = { ...cart };
+  const cartSuccess = { ...cart, products: [] };
 
   for (let productCart of cart.products) {
     const pid = productCart.product._id.toString();
@@ -75,17 +76,19 @@ export const purchase = async (cart, user) => {
       cartRest.products = cartRest.products.filter(
         (p) => p.product._id.toString() !== pid
       );
+
+      cartSuccess.products.push(productCart);
     }
   }
 
-  if (ticket.amount) {
-    cart.ticket = await ticketsService.createTicket(ticket);
+  if (cartSuccess.products.length) {
+    cartSuccess.ticket = await ticketsService.createTicket(ticket);
 
-    const html = purchaseHtml(user, cart);
+    const html = purchaseHtml(user, cartSuccess);
     await sendEmail(user.email, "Web purchase", html);
+
+    await updateCart(cart._id, cartRest);
   }
 
-  await updateCart(cart._id, cartRest);
-
-  return cartRest;
+  return cartSuccess;
 };
